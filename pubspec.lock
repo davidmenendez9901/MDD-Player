@@ -263,10 +263,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: a38574032c5f1dd06c4aee541789906c12ccaab8ba01446e800d9c5b79c4a978
+      sha256: "6d7fd89431262d8f3125e81b50d3847a091d846eafcd4fdb88dd06f36d705a45"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.2.0"
   ffmpeg_kit_flutter_audio:
     dependency: "direct main"
     description:
@@ -497,21 +497,21 @@ packages:
     source: hosted
     version: "10.3.0"
   fwfh_text_style:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: fwfh_text_style
-      sha256: "37806ee0222f79b6e8d4c698c322c897eae6a817258156f40aeece4e588fac60"
+      sha256: "5f8b587fd223a6bf14aad3d3da5e7ced0628becbd0768f8e7ae25ff6b9f3d2ec"
       url: "https://pub.dev"
     source: hosted
-    version: "2.22.08+1"
+    version: "2.23.8"
   google_fonts:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: e20ff62b158b96f392bfc8afe29dee1503c94fbea2cbe8186fd59b756b8ae982
+      sha256: ba03d03bcaa2f6cb7bd920e3b5027181db75ab524f8891c8bc3aa603885b8055
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "6.3.3"
   grouped_list:
     dependency: "direct main"
     description:

@@ -57,8 +57,8 @@ dependencies:
   # Dart advanced Streams
   rxdart: any
 
-  # Google Fonts
-  google_fonts: ^5.1.0
+  # Google Fonts (6.x necesario para Flutter 3.44; 5.x rompe en const-eval)
+  google_fonts: ^6.3.1
 
   # Custom VideoPlayer with support for Muxed Streams
   video_player:
@@ -162,8 +162,13 @@ dependencies:
   collection: ^1.17.2
 
 dependency_overrides:
+  # win32 4.1.4 + parche local en pub-cache (guid.dart: UnmodifiableUint8ListView
+  # eliminado en Dart 3.5). No subir a 5.x: file_picker 5.2.5 necesita winrt.dart.
   win32: ^4.0.0
   http: ^1.0.0
+  # Flutter 3.44: TextStyle.getTextStyle/getParagraphStyle cambiaron (textScaler);
+  # la 2.22.x que pide flutter_widget_from_html_core 0.10 no compila.
+  fwfh_text_style: ^2.23.8
 
 dev_dependencies:
   flutter_test:

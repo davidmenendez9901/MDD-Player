@@ -19,7 +19,7 @@
 
 > **Cómo retomar:** mira la columna *Estado* en la tabla de abajo, busca el ⏭️ (próximo sprint), y continúa desde ahí. Al terminar un sprint: marca sus checkboxes `[x]`, cambia su fila a ✅, mueve el ⏭️ al siguiente, actualiza la fecha y añade una línea a la **Bitácora**.
 
-> 👉 **PRÓXIMO PASO:** Sprint 1.3 — ejecutar `flutter build apk --debug` para validar el build de Android (aquí puede aparecer el bloqueo de toolchain de la Fase 2). El código ya tiene **0 errores** de análisis.
+> 👉 **PRÓXIMO PASO:** Sprint 2.2 — instalar `build/app/outputs/flutter-apk/app-debug.apk` (238 MB) en un dispositivo Android real y verificar arranque + permisos. **Ojo:** muchos fixes viven en `~/.pub-cache` (ver bitácora) — no ejecutar `flutter pub cache clean/repair` ni cambiar refs de git deps sin antes subir los fixes upstream.
 
 Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 
@@ -27,9 +27,9 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 |------|--------|--------|-------|
 | 1. Compilación | 1.1 Deps git desincronizadas | ✅ | NewPipe→`1e4a54`, audio_tagger→`f907c4`. Eliminó ~27 errores. |
 | 1. Compilación | 1.2 Flutter 3.44 (`TabBarThemeData`) | ✅ | 3 archivos de tema. **0 errores totales.** |
-| 1. Compilación | 1.3 Validación de build | 🔄 | `analyze` ✅ (0 errores). Falta `flutter build apk --debug` + commit. ⏭️ **AQUÍ** |
-| 2. Build Android | 2.1 Alinear toolchain | ⬜ | Java 21 vs Gradle 7.5.1/AGP 7.3.1. Probable bloqueo. |
-| 2. Build Android | 2.2 Validación en dispositivo | ⬜ | |
+| 1. Compilación | 1.3 Validación de build | ✅ | `analyze` 0 errores + APK debug construido. Commit `69f9cc0`. |
+| 2. Build Android | 2.1 Alinear toolchain | ✅ | Gradle 8.10.2 + AGP 8.7.0 + JDK 17 + ~20 parches en pub-cache. **APK: 238 MB.** |
+| 2. Build Android | 2.2 Validación en dispositivo | ⬜ | ⏭️ **AQUÍ** — instalar APK, permisos, arranque. |
 | 3. Verif. funcional | 3.1 Reproducción | ⬜ | Requiere dispositivo + red. |
 | 3. Verif. funcional | 3.2 Descarga | ⬜ | |
 | 4. Limpieza | 4.1 Deprecaciones | ⬜ | Opcional (411 warnings). |
@@ -57,7 +57,22 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 - `2026-06-09` — Arreglado `flutter pub get` (`intl` 0.19→0.20.2 en `pubspec.yaml:38`).
 - `2026-06-09` — Sprint 1.1: `flutter pub upgrade newpipeextractor_dart audio_tagger`.
 - `2026-06-09` — Sprint 1.2: `TabBarTheme`→`TabBarThemeData` en `dark.dart`/`light.dart`. `flutter analyze` = 0 errores.
-- *(pendiente de commit: todos los cambios anteriores siguen sin commitear).*
+- `2026-06-09` — Commit `69f9cc0` "Fix compilation: update git deps + Flutter 3.44 API" (Sprints 1.1+1.2 commiteados).
+- `2026-06-09` — Sprint 2.1 (working tree, sin commitear): migración a Gradle 8.10.2 + AGP 8.7.0 + Kotlin 1.9.23, JDK 17 vía `org.gradle.java.home`, `app/build.gradle` al DSL declarativo, inyección de `namespace` para plugins viejos. Heap de Gradle subido a 4G.
+- `2026-06-09` — **Bloqueo resuelto:** el build se colgaba indefinidamente (daemon al 100% CPU sin progreso). Causa: `force = true` (API eliminada en Gradle 8) en el `android/build.gradle` de `newpipeextractor_dart`; la excepción disparaba un bucle infinito en el conversor de errores de Gradle (`DefaultFailureFactory`). Fix local en pub-cache: `implementation ('com.github.spotbugs:spotbugs-annotations:4.8.3!!')`. ⚠️ Falta subirlo upstream a `SongTube/NewPipeExtractor_Dart`.
+- `2026-06-09` — **Cadena de fixes AGP 8 / Flutter moderno** (iterando `flutter build apk --debug`, cada error caía en segundos):
+  1. `package=` en AndroidManifest de librerías ya no se admite → eliminado de los **34 plugins** en pub-cache (script sed; el `namespace` lo inyecta el build.gradle raíz).
+  2. "Inconsistent JVM-target (1.8 vs 17)" → inyección de `compileOptions` Java 17 vía `subprojects.afterEvaluate` + `kotlin.jvm.target.validation.mode=warning` en `gradle.properties`.
+  3. `:video_player` con compileSdk < 30 no admite source Java 17 → inyección de `compileSdkVersion 34` a todos los plugins.
+  4. Embedding v1 (`PluginRegistry.Registrar`, eliminado de Flutter) → limpiado de **13 plugins** en pub-cache: 9 por script (borrar `registerWith`), 4 a mano (file_picker, image_picker_android, flutter_inappwebview, permission_handler_android — campos/parámetros/ramas v1; se conservó solo el camino v2).
+  5. `com.github.teamnewpipe:NewPipeExtractor:v0.24.2` no resolvía: JitPack es case-sensitive → `TeamNewPipe` (otro fix para upstream `SongTube/NewPipeExtractor_Dart`).
+  6. ffmpeg-kit retirado (binarios borrados de Maven Central y GitHub) → mirror Aliyun añadido como repo de respaldo en `android/build.gradle` (conserva `com.arthenica:ffmpeg-kit-audio:6.0-2.LTS`).
+  7. Errores Dart con Flutter 3.44: `IconData` ahora es `final` → reescritas ~8.800 constantes generadas en ionicons/eva_icons/material_design_icons (pub-cache); `google_fonts` 5→6.3 (pubspec); `win32` 4.1.4 parcheado (`UnmodifiableUint8ListView`→`asUnmodifiableView()`, no subir a 5.x: file_picker necesita `winrt.dart`); override `fwfh_text_style` ^2.23.8 (textScaler).
+  8. `audio_session` con `-Werror` + deprecaciones SDK 34 → strip de `-Werror` vía `doFirst` en build.gradle raíz.
+  9. Daños colaterales del script v1: reconstruido `init()` v2-only en ffmpeg_kit_flutter_audio; eliminado `FlutterView` (v1) de flutter_inappwebview.
+  10. `sensors_plus`: nulabilidad de `getDefaultSensor` (SDK 34) → `Sensor?`.
+- `2026-06-09` — ✅ **`flutter build apk --debug` EXITOSO** → `build/app/outputs/flutter-apk/app-debug.apk` (238 MB). Sprints 1.3 y 2.1 cerrados.
+  - ⚠️ **Todos los parches en `~/.pub-cache` se pierden si se re-fetchean los paquetes** (`flutter pub cache clean/repair` o cambio de ref). Mitigación pendiente: subir fixes upstream (git deps propios: NewPipeExtractor_Dart, apk_installer) y/o fork+pin o vendorizar los plugins de pub.dev abandonados.
 
 ---
 

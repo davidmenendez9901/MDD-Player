@@ -1,26 +1,48 @@
-buildscript {
-    ext.kotlin_version = '1.9.23'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
+        // Mirror de Maven Central que conserva los binarios de ffmpeg-kit
+        // (com.arthenica), retirados del Central oficial en 2025.
+        maven { url "https://maven.aliyun.com/repository/central" }
     }
 }
 
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// AGP 8 requiere `namespace` en cada módulo. Varios plugins viejos (sin mantener)
+// aún declaran el paquete sólo en el AndroidManifest. Lo inyectamos aquí para
+// no tener que actualizarlos (lo que reintroduciría rupturas de API). Ver plan.md Sprint 2.1.
+// Debe registrarse ANTES de evaluationDependsOn(':app') para no chocar con la evaluación.
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (namespace == null) {
+                    namespace project.group
+                }
+            }
+            // Plugins viejos fijan Java 1.8 pero Kotlin hereda el toolchain (17):
+            // "Inconsistente JVM-target compatibility". Alineamos todo a 17, y
+            // subimos compileSdk (Java 9+ exige compileSdk >= 30).
+            project.android {
+                compileSdkVersion 34
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+            // audio_session compila con -Werror y las deprecaciones del SDK 34
+            // rompen el build. Lo quitamos en cuanto va a ejecutarse el javac.
+            project.tasks.withType(JavaCompile).configureEach { t ->
+                t.doFirst { t.options.compilerArgs.removeAll { it == '-Werror' } }
+            }
+        }
+    }
 }
 subprojects {
     project.evaluationDependsOn(':app')

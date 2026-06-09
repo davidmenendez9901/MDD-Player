@@ -89,7 +89,7 @@ class ContentProvider extends ChangeNotifier {
     notifyListeners();
   }
   void searchContentLoadNextPage() async {
-    if (searchingContent) {
+    if (searchingContent || NetworkManager.isOffline) {
       return;
     }
     searchingContent = true;
@@ -174,6 +174,13 @@ class ContentProvider extends ChangeNotifier {
           title: 'Reproduciendo descarga local, sin usar datos'));
         return;
       }
+    }
+    // Offline mode and not downloaded: tell the user why nothing opens
+    if (NetworkManager.isOffline) {
+      showSnackbar(customSnackBar: const CustomSnackBar(
+        icon: Icons.cloud_off_rounded,
+        title: 'Modo offline activo, este contenido necesita internet'));
+      return;
     }
     // Switch to VideoPlayer
     Provider.of<UiProvider>(navigatorKey.currentState!.context, listen: false).currentPlayer = CurrentPlayer.video;

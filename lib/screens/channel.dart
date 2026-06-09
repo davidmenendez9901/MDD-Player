@@ -5,11 +5,13 @@ import 'package:image_fade/image_fade.dart';
 import 'package:intl/intl.dart';
 import 'package:newpipeextractor_dart/extractors/channels.dart';
 import 'package:newpipeextractor_dart/newpipeextractor_dart.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/ui/components/channel_image.dart';
 import 'package:songtube/ui/components/infinite_scrolling_adapter.dart';
 import 'package:songtube/ui/components/subscribe_text.dart';
 import 'package:songtube/ui/rounded_tab_indicator.dart';
+import 'package:songtube/ui/sheets/snack_bar.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:songtube/ui/tiles/stream_tile.dart';
 import 'package:songtube/ui/components/st_network_image.dart';
@@ -41,6 +43,16 @@ class _ChannelPageState extends State<ChannelPage> with TickerProviderStateMixin
   bool fetchingNextPage = false;
 
   Future<void> loadChannel() async {
+    // Offline mode: channel info needs the network, explain and close
+    if (NetworkManager.isOffline) {
+      showSnackbar(customSnackBar: const CustomSnackBar(
+        icon: Icons.cloud_off_rounded,
+        title: 'Modo offline activo, los canales necesitan internet'));
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+      return;
+    }
     if (widget.channel == null) {
       try {
         channel = await widget.infoItem.getChannel;
@@ -64,8 +76,14 @@ class _ChannelPageState extends State<ChannelPage> with TickerProviderStateMixin
   }
 
   void loadChannelUploads() async {
+    // loadChannel may have failed or been blocked (offline mode)
+    if (channel?.url == null) {
+      return;
+    }
     channelUploads = await ChannelExtractor.getChannelUploads(channel!.url!);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void loadChannelNextPage() async {

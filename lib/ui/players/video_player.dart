@@ -43,7 +43,13 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   // Function to enter PiP mode
   void enterPipMode() {
     final size = Provider.of<ContentProvider>(context, listen: false).playingContent?.videoPlayerController.videoPlayerController?.value.size;
-    FlutterPip.enterPictureInPictureMode(pipRatio: size != null ? PipRatio(width: size.width.round(), height: size.height.round()) : null);
+    // Audio-only playback has no video surface: its size produces an
+    // invalid aspect ratio and Android throws "aspect ratio too extreme"
+    final ratio = size != null && size.height > 0 ? size.width / size.height : null;
+    if (ratio == null || ratio < 0.45 || ratio > 2.35) {
+      return;
+    }
+    FlutterPip.enterPictureInPictureMode(pipRatio: PipRatio(width: size!.width.round(), height: size.height.round()));
   }
 
   // Fullscreen status

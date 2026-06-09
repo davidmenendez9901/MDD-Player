@@ -420,7 +420,13 @@ class _VideoPlayerContentState extends State<VideoPlayerContent> with TickerProv
                     text: Languages.of(context)!.labelPopupMode,
                     onTap: () {
                       final size = Provider.of<ContentProvider>(context, listen: false).playingContent?.videoPlayerController.videoPlayerController?.value.size;
-                      FlutterPip.enterPictureInPictureMode(pipRatio: size != null ? PipRatio(width: size.width.round(), height: size.height.round()) : null);
+                      // No PiP for audio-only playback: there is no video
+                      // surface and the aspect ratio would be invalid
+                      final ratio = size != null && size.height > 0 ? size.width / size.height : null;
+                      if (ratio == null || ratio < 0.45 || ratio > 2.35) {
+                        return;
+                      }
+                      FlutterPip.enterPictureInPictureMode(pipRatio: PipRatio(width: size!.width.round(), height: size.height.round()));
                     },
                   ),
                 );

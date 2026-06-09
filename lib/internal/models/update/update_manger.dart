@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/internal/models/update/update_detail.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/main.dart';
 import 'package:songtube/ui/components/app_update_dialog.dart';
 
@@ -21,6 +22,10 @@ class AppUpdateManger {
 
   /// Checks for app update. Doesn't run in debug builds
   static void inAppUpdater() async {
+    // Offline mode: skip the GitHub API request entirely
+    if (NetworkManager.isOffline) {
+      return;
+    }
     packageInfo = await PackageInfo.fromPlatform();
     appVersion = double.parse(packageInfo.version.replaceRange(3, 5, ""));
     appSubversion = int.parse(packageInfo.version.replaceRange(0, 4, ""));

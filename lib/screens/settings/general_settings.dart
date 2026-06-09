@@ -98,6 +98,24 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           value: AppSettings.enableDynamicColors,
         ),
         const SizedBox(height: 12),
+        // Offline mode
+        SettingTileCheckbox(
+          leadingIcon: Icons.cloud_off_rounded,
+          title: 'Modo offline',
+          subtitle: 'Impide que la app se conecte a internet. Desactívalo para buscar o descargar',
+          onChange: (_) {
+            AppSettings.offlineMode = !AppSettings.offlineMode;
+            // Returning online: reload the network-backed home content
+            if (!AppSettings.offlineMode) {
+              final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+              contentProvider.refreshTrendingPage();
+              contentProvider.loadChannelsFeed();
+            }
+            mediaProvider.updateState();
+          },
+          value: AppSettings.offlineMode,
+        ),
+        const SizedBox(height: 12),
         // Music-focused search
         SettingTileCheckbox(
           leadingIcon: EvaIcons.musicOutline,

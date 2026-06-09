@@ -15,6 +15,7 @@ import 'package:songtube/ui/animations/animated_icon.dart';
 import 'package:songtube/ui/animations/animated_text.dart';
 import 'package:songtube/ui/animations/blue_page_route.dart';
 import 'package:songtube/ui/text_styles.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class MusicBrainzSearch extends StatefulWidget {
   final String title;
@@ -213,7 +214,7 @@ class _TagsResultsPageState extends State<MusicBrainzSearch> {
                   ),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(image.data)
+                    image: stImageProvider(image.data)
                   )
                 ),
               ),
@@ -332,7 +333,7 @@ class __DataItemState extends State<_DataItem> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: artwork == null
-                            ? NetworkImage(image.data) as ImageProvider
+                            ? stImageProvider(image.data) as ImageProvider
                             : FileImage(File(artwork!))
                         )
                       ),

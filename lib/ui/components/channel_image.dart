@@ -5,6 +5,7 @@ import 'package:songtube/services/content_service.dart';
 import 'package:songtube/ui/components/shimmer_container.dart';
 import 'package:songtube/ui/ui_utils.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class ChannelImage extends StatelessWidget {
   const ChannelImage({
@@ -44,7 +45,7 @@ class ChannelImage extends StatelessWidget {
                 fadeInDuration: const Duration(milliseconds: 300),
                 placeholder: MemoryImage(kTransparentImage),
                 image: imageUrl != null
-                  ? NetworkImage(imageUrl!) as ImageProvider
+                  ? stImageProvider(imageUrl!) as ImageProvider
                   : FileImage(snapshot!.data! is File ? snapshot.data! : File(snapshot.data!)),
                 fit: BoxFit.cover,
                 imageErrorBuilder:(context, error, stackTrace) {

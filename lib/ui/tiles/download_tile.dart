@@ -6,6 +6,7 @@ import 'package:songtube/ui/animations/animated_text.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:validators/validators.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class DownloadQueueTile extends StatefulWidget {
   const DownloadQueueTile({
@@ -121,7 +122,7 @@ class _DownloadQueueTileState extends State<DownloadQueueTile> {
             fadeInDuration: const Duration(milliseconds: 200),
             image: widget.item.downloadInfo.tags.artwork is String
               ? (isURL(widget.item.downloadInfo.tags.artwork)
-                ? NetworkImage(widget.item.downloadInfo.tags.artwork)
+                ? stImageProvider(widget.item.downloadInfo.tags.artwork)
                 : FileImage(File(widget.item.downloadInfo.tags.artwork))) as ImageProvider
               : widget.item.downloadInfo.tags.artwork is File
                 ? FileImage(widget.item.downloadInfo.tags.artwork) as ImageProvider

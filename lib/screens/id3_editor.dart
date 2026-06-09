@@ -30,6 +30,7 @@ import 'package:songtube/ui/tiles/text_field_tile.dart';
 import 'package:songtube/ui/ui_utils.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:validators/validators.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class ID3Editor extends StatefulWidget {
   const ID3Editor({
@@ -488,7 +489,7 @@ class _ID3EditorState extends State<ID3Editor> {
                   ),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(image.data)
+                    image: stImageProvider(image.data)
                   )
                 ),
               ),
@@ -547,7 +548,7 @@ class _ID3EditorState extends State<ID3Editor> {
           ImageFade(
             fadeDuration: const Duration(milliseconds: 300),
             image: isURL(tags.artwork)
-              ? NetworkImage(tags.artwork)
+              ? stImageProvider(tags.artwork)
               : FileImage(File(tags.artwork)) as ImageProvider,
             placeholder: Image.memory(kTransparentImage),
             fit: BoxFit.cover,

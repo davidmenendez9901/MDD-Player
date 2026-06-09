@@ -34,6 +34,7 @@ import 'package:songtube/ui/sheets/add_to_stream_playlist.dart';
 import 'package:songtube/ui/sheets/snack_bar.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:songtube/ui/ui_utils.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class VideoPlayerContent extends StatefulWidget {
   const VideoPlayerContent({
@@ -257,7 +258,7 @@ class _VideoPlayerContentState extends State<VideoPlayerContent> with TickerProv
                                   child: ImageFade(
                                     fadeDuration: const Duration(milliseconds: 300),
                                     placeholder: ShimmerContainer(height: 40, width: 40, borderRadius: BorderRadius.circular(100)),
-                                    image: NetworkImage(videoInfo.uploaderAvatars!.first),
+                                    image: stImageProvider(videoInfo.uploaderAvatars!.first),
                                     fit: BoxFit.cover,
                                   ),
                                 ),

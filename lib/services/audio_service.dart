@@ -9,6 +9,7 @@ import 'package:newpipeextractor_dart/extractors/videos.dart';
 import 'package:newpipeextractor_dart/models/videoInfo.dart';
 import 'package:newpipeextractor_dart/newpipeextractor_dart.dart';
 import 'package:songtube/internal/artwork_manager.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 
 MediaControl playControl = const MediaControl(
   androidIcon: 'drawable/ic_play_arrow',
@@ -298,6 +299,10 @@ class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       loudnessEnhancer.setTargetGain(gain);
     }
     if (name == 'initBackgroundPlayback') {
+      // Offline mode: background playback of remote streams is not allowed
+      if (NetworkManager.isOffline) {
+        return null;
+      }
       backgroundPlaybackEnabled = true;
       final position = Duration(seconds: extras!['position']);
       final audioUrl = extras['audioUrl'];

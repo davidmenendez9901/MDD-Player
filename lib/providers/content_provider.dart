@@ -7,6 +7,7 @@ import 'package:newpipeextractor_dart/extractors/search.dart';
 import 'package:newpipeextractor_dart/newpipeextractor_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:songtube/internal/models/channel_subscription.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/providers/app_settings.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/internal/models/channel_data.dart';
@@ -14,6 +15,7 @@ import 'package:songtube/internal/models/content_wrapper.dart';
 import 'package:songtube/main.dart';
 import 'package:songtube/providers/ui_provider.dart';
 import 'package:songtube/services/content_service.dart';
+import 'package:songtube/ui/sheets/snack_bar.dart';
 import 'package:songtube/ui/sheets/video_preview_sheet.dart';
 import 'package:songtube/ui/ui_utils.dart';
 
@@ -56,6 +58,13 @@ class ContentProvider extends ChangeNotifier {
   YoutubeSearch? searchContent;
   bool searchingContent = false;
   void searchContentFor(String query) async {
+    // Offline mode: searching needs the network
+    if (NetworkManager.isOffline) {
+      showSnackbar(customSnackBar: const CustomSnackBar(
+        icon: Icons.cloud_off_rounded,
+        title: 'Modo offline activo, desactívalo para buscar'));
+      return;
+    }
     searchContent = null;
     searchingContent = true;
     notifyListeners();
@@ -90,8 +99,9 @@ class ContentProvider extends ChangeNotifier {
 
   // Refresh Trending page
   void refreshTrendingPage() {
-    // Music-only mode hides the Trending tab: skip the fetch to save data
-    if (AppSettings.musicOnlySearch) {
+    // Music-only mode hides the Trending tab: skip the fetch to save data.
+    // Offline mode must not reach the network at all
+    if (AppSettings.musicOnlySearch || NetworkManager.isOffline) {
       return;
     }
     ContentService.getTrendingPage().then((value) {
@@ -348,6 +358,10 @@ class ContentProvider extends ChangeNotifier {
   // Extract feed from the first 10 channels
   // by channel subscription date order
   Future<void> loadChannelsFeed() async {
+    // Offline mode: the subscriptions feed needs the network
+    if (NetworkManager.isOffline) {
+      return;
+    }
     // Clear current channels feed
     channelsFeedList = [];
     notifyListeners();

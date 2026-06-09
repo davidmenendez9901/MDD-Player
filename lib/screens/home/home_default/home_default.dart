@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/providers/app_settings.dart';
+import 'package:songtube/ui/sheets/snack_bar.dart';
 import 'package:songtube/main.dart';
 import 'package:songtube/providers/content_provider.dart';
 import 'package:songtube/providers/media_provider.dart';
@@ -208,6 +209,28 @@ class _HomeDefaultState extends State<HomeDefault> with TickerProviderStateMixin
             ),
           ),
         ),
+        // Quick offline mode toggle (visual indicator when active)
+        IconButton(
+          tooltip: 'Modo offline',
+          onPressed: () {
+            final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+            AppSettings.offlineMode = !AppSettings.offlineMode;
+            // Returning online: reload the network-backed home content
+            if (!AppSettings.offlineMode) {
+              contentProvider.refreshTrendingPage();
+              contentProvider.loadChannelsFeed();
+            }
+            setState(() {});
+            showSnackbar(customSnackBar: CustomSnackBar(
+              icon: AppSettings.offlineMode ? Icons.cloud_off_rounded : Icons.cloud_done_rounded,
+              title: AppSettings.offlineMode
+                ? 'Modo offline activado, la app no usará internet'
+                : 'Modo offline desactivado'));
+          },
+          icon: AppSettings.offlineMode
+            ? Icon(Icons.cloud_off_rounded, size: 24,
+                color: Provider.of<MediaProvider>(context).currentColors.vibrant)
+            : const AppAnimatedIcon(Icons.cloud_queue_rounded, size: 24)),
         IconButton(
           onPressed: () {
             UiUtils.showModal(

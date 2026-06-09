@@ -13,8 +13,11 @@ import 'package:songtube/internal/models/download/download_info.dart';
 import 'package:songtube/internal/models/download/download_item.dart';
 import 'package:songtube/internal/models/song_item.dart';
 import 'package:songtube/main.dart';
+import 'package:flutter/material.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/providers/media_provider.dart';
 import 'package:songtube/providers/playlist_provider.dart';
+import 'package:songtube/ui/sheets/snack_bar.dart';
 
 class DownloadProvider extends ChangeNotifier {
 
@@ -70,6 +73,13 @@ class DownloadProvider extends ChangeNotifier {
 
   // Handle Single Video Download
   Future<void> handleDownloadItem({required DownloadInfo info}) async {
+    // Offline mode: downloading needs the network
+    if (NetworkManager.isOffline) {
+      showSnackbar(customSnackBar: const CustomSnackBar(
+        icon: Icons.cloud_off_rounded,
+        title: 'Modo offline activo, desactívalo para descargar'));
+      return;
+    }
     if (info.downloadType == DownloadType.audio) {
       await (androidSdk >= 33 ? Permission.audio.request() : Permission.storage.request());
     }

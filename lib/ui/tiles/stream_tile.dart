@@ -13,6 +13,7 @@ import 'package:songtube/ui/components/shimmer_container.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:songtube/ui/ui_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class StreamTileCollapsed extends StatelessWidget {
   const StreamTileCollapsed({
@@ -65,7 +66,7 @@ class StreamTileCollapsed extends StatelessWidget {
                       fadeDuration: const Duration(milliseconds: 300),
                       placeholder:
                           const ShimmerContainer(height: null, width: null),
-                      image: NetworkImage(stream.thumbnails!.hqdefault),
+                      image: stImageProvider(stream.thumbnails!.hqdefault),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -194,7 +195,7 @@ class StreamTileExpanded extends StatelessWidget {
           fadeDuration: const Duration(milliseconds: 300),
           placeholder: Container(
                 color: Theme.of(context).cardColor.withOpacity(0.6)),
-          image: NetworkImage(stream.thumbnails?.maxresdefault ?? ''),
+          image: stImageProvider(stream.thumbnails?.maxresdefault ?? ''),
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
               Image.network(stream.thumbnails!.hqdefault, fit: BoxFit.cover),

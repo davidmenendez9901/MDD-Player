@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_fade/image_fade.dart';
 import 'package:validators/validators.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class PlaylistArtwork extends StatefulWidget {
   const PlaylistArtwork({
@@ -89,7 +90,7 @@ class _PlaylistArtworkState extends State<PlaylistArtwork> {
     } else if (artwork is Uint8List) {
       return MemoryImage(artwork);
     } else if (isURL(artwork)) {
-      return NetworkImage(artwork);
+      return stImageProvider(artwork);
     } else if (artwork is String) {
       return FileImage(File(artwork));
     } else {

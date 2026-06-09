@@ -19,7 +19,7 @@
 
 > **Cómo retomar:** mira la columna *Estado* en la tabla de abajo, busca el ⏭️ (próximo sprint), y continúa desde ahí. Al terminar un sprint: marca sus checkboxes `[x]`, cambia su fila a ✅, mueve el ⏭️ al siguiente, actualiza la fecha y añade una línea a la **Bitácora**.
 
-> 👉 **PRÓXIMO PASO:** Sprint 3.1 — completar verificación de reproducción: audio en background (`audio_service`), trending, canales y playlists. Búsqueda y video ya verificados en dispositivo. **Ojo:** muchos fixes viven en `~/.pub-cache` (ver bitácora) — no ejecutar `flutter pub cache clean/repair` ni cambiar refs de git deps sin antes subir los fixes upstream.
+> 👉 **PRÓXIMO PASO:** Sprint 6.4 — verificar modo offline en dispositivo (ciclo activar→usar biblioteca local→desactivar→buscar/descargar→reactivar; idealmente con captura de tráfico). También pendiente del Sprint 3.1: audio en background y playlists (trending y canales ya verificados). **Ojo:** muchos fixes viven en `~/.pub-cache` (ver bitácora) — no ejecutar `flutter pub cache clean/repair` ni cambiar refs de git deps sin antes subir los fixes upstream.
 
 Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 
@@ -34,14 +34,14 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 | 3. Verif. funcional | 3.2 Descarga | ⬜ | |
 | 4. Limpieza | 4.1 Deprecaciones | ⬜ | Opcional (411 warnings). |
 | 4. Limpieza | 4.2 SDK constraint | ⬜ | Opcional. |
-| **5. Fundamentos** | 5.1 Settings nuevos | ⬜ | Inicio de PARTE 2. |
-| **5. Fundamentos** | 5.2 NetworkManager | ⬜ | |
-| **5. Fundamentos** | 5.3 Caché miniaturas | ⬜ | `cached_network_image`. |
-| **5. Fundamentos** | 5.4 Validación | ⬜ | |
-| 6. Modo Offline | 6.1 Guards de red | ⬜ | |
-| 6. Modo Offline | 6.2 UI del switch | ⬜ | AppBar + Ajustes. |
-| 6. Modo Offline | 6.3 Comportamiento offline | ⬜ | |
-| 6. Modo Offline | 6.4 Verificación | ⬜ | |
+| **5. Fundamentos** | 5.1 Settings nuevos | ✅ | 4 keys + getters/setters (+`musicOnlySearch` previo). |
+| **5. Fundamentos** | 5.2 NetworkManager | ✅ | `lib/internal/network/network_manager.dart`. |
+| **5. Fundamentos** | 5.3 Caché miniaturas | ✅ | `stImageProvider` + `STNetworkImage`, ~20 sitios migrados, file service offline-safe. |
+| **5. Fundamentos** | 5.4 Validación | ✅ | `analyze` 0 errores + APK debug OK. |
+| 6. Modo Offline | 6.1 Guards de red | ✅ | Búsqueda, trending, feed, fetch de contenido, descargas, players, updater, imágenes. |
+| 6. Modo Offline | 6.2 UI del switch | ✅ | Toggle en AppBar del home (icono nube con indicador) + Ajustes. |
+| 6. Modo Offline | 6.3 Comportamiento offline | ✅ | Snackbars informativos; biblioteca local intacta; recarga al volver online. |
+| 6. Modo Offline | 6.4 Verificación | ⬜ | ⏭️ Requiere dispositivo: ciclo on/off + captura de tráfico. |
 | 7. Audio-only | 7.1 Reproducción audio directa | ⬜ | Por defecto ON. |
 | 7. Audio-only | 7.2 Evitar datos de video | ⬜ | |
 | 7. Audio-only | 7.3 Miniaturas ligeras | ⬜ | |
@@ -93,6 +93,14 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
   5. `AudioSession` configurada como música (`AudioSessionConfiguration.music()`) + `audio_session` como dependencia directa.
   - Verificado en dispositivo: sesión `active=true`, pausa/reanudar por notificación y media keys ✓, grabaciones fuera de la biblioteca ✓.
 - `2026-06-09` — **Modo "Solo música" (petición del usuario, adelanto de Fase 7):** nuevo ajuste `musicOnlySearch` (default ON) en `AppSettings` + toggle en Ajustes generales. Cuando está activo, la búsqueda usa el filtro `music_songs` de NewPipe (catálogo de YouTube Music) → solo canciones, sin videos/canales no musicales. Verificado en dispositivo: búsqueda "shakira" devuelve solo canciones con carátula de álbum. Con el toggle OFF se respetan los filtros manuales de siempre. Además (petición del usuario): con "Solo música" activo la pestaña **Trending se oculta** (`home_default.dart`, contador de tabs dinámico) y su **fetch se omite** al iniciar (`refreshTrendingPage` con early-return → ahorra datos); al desactivar el toggle en Ajustes la pestaña reaparece y el trending se recarga. Verificado en dispositivo: home muestra solo Subscriptions/Playlists/Favorites, 0 excepciones.
+- `2026-06-09` — **FASES 5 y 6 implementadas (código completo, pendiente verificación en dispositivo — Sprint 6.4):**
+  - **5.1:** keys+getters/setters `offlineMode`, `dataSaverMode`, `audioOnlyMode`, `preferDownloadedPlayback` en `AppSettings`.
+  - **5.2:** `NetworkManager` (`lib/internal/network/network_manager.dart`) con `isOffline`/`canConnect`/`ensureOnline()` + `OfflineModeException`. Sin `connectivity_plus` (decisión fijada).
+  - **5.3:** `cached_network_image` + `flutter_cache_manager` añadidos. `lib/ui/components/st_network_image.dart`: `stImageProvider()` (drop-in de `NetworkImage` con caché en disco de 30 días, file service que **lanza si offline** → cero peticiones salientes de imágenes) + widget `STNetworkImage` + `lowRes()` (degrada miniaturas de YouTube a `mqdefault` con dataSaver/audioOnly). **~20 sitios migrados** con script (stream/playlist tiles, channel, comments, players, menús de descarga, id3, music_brainz, artist_card, channel_image, playlist_artwork). Palette de video: saltado en offline/dataSaver, cacheado si no.
+  - **6.1:** guards de red en búsqueda, trending, feed de suscripciones, `fetchInfoItemFromUrl`/`fetchVideoFromInfoItem`/`fetchPlaylistFromInfoItem`, avatar de canal, descargas (con snackbar), `loadVideo` del reproductor, `initBackgroundPlayback`, update checker.
+  - **6.2:** toggle rápido en la AppBar del home (nube tachada coloreada cuando activo + snackbar) y `SettingTileCheckbox` en Ajustes; al desactivar se recargan trending y feed.
+  - **6.3:** biblioteca/reproducción local intactas offline; mensajes claros al intentar buscar/descargar.
+  - **5.4:** `flutter analyze` 0 errores; `flutter build apk --debug` OK.
 - `2026-06-09` — **Garantía "nunca video sin permiso explícito" (petición del usuario):** auditadas todas las rutas — las listas de calidades solo construyen URLs desde metadata ya descargada; el único camino que auto-cargaba video era el fallback a muxed 360p introducido para los 403 de PoToken. Reemplazado: ante un stream de audio muerto ahora se prueban los **demás streams de audio** del video (hay ~5 itags), uno a uno, y si todos fallan el reproductor queda en error — **jamás carga un stream de video automáticamente**. El video solo se carga si el usuario elige una calidad de video en el selector. Commit `11a6c7b` + este cambio.
 
 ---

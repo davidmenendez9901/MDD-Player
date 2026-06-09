@@ -7,18 +7,21 @@ import 'package:newpipeextractor_dart/extractors/trending.dart';
 import 'package:newpipeextractor_dart/extractors/videos.dart';
 import 'package:newpipeextractor_dart/newpipeextractor_dart.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:validators/validators.dart';
 import 'package:http/http.dart' as http;
 
 class ContentService {
 
-  // Get list of trending videos 
+  // Get list of trending videos
   static Future<List<StreamInfoItem>?> getTrendingPage() async {
+    if (NetworkManager.isOffline) return [];
     return await TrendingExtractor.getTrendingVideos();
   }
 
   // Fetch a Video/Playlist from URL
   static Future<dynamic> fetchInfoItemFromUrl(String? url) async {
+    if (NetworkManager.isOffline) return null;
     if (isNull(url) || !isURL(url)) return null;
     // Check if url is a playlist
     if (url!.contains('list=')) {
@@ -45,6 +48,7 @@ class ContentService {
 
   // Fetch a Video from StreamItem
   static Future<YoutubeVideo?> fetchVideoFromInfoItem(StreamInfoItem infoItem) async {
+    if (NetworkManager.isOffline) return null;
     try {
       final video = await VideoExtractor.getStream(infoItem.url);
       if (kDebugMode) {
@@ -61,6 +65,7 @@ class ContentService {
 
   // Fetch a Playlist from PlaylistItem
   static Future<YoutubePlaylist?> fetchPlaylistFromInfoItem(PlaylistInfoItem infoItem) async {
+    if (NetworkManager.isOffline) return null;
     try {
       final playlist = await PlaylistExtractor.getPlaylistDetails(infoItem.url);
       await playlist.getStreams();
@@ -83,6 +88,8 @@ class ContentService {
     if (await file.exists()) {
       return file;
     } else {
+      // Offline: no cached avatar available and we must not fetch one
+      NetworkManager.ensureOnline();
       final channel = await ChannelExtractor.channelInfo(channelUrl);
       final avatarUrl = channel.avatars?.first;
       final data = await http.get(Uri.parse(avatarUrl!));

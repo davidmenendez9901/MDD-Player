@@ -8,6 +8,7 @@ import 'package:songtube/internal/music_brainz.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class ArtistCardTile extends StatefulWidget {
   const ArtistCardTile({
@@ -64,7 +65,7 @@ class _ArtistCardTileState extends State<ArtistCardTile> {
                     return ImageFade(
                       placeholder: Image.memory(kTransparentImage, fit: BoxFit.cover),
                       image: snapshot.hasData && snapshot.data != null
-                        ? NetworkImage(snapshot.data!)
+                        ? stImageProvider(snapshot.data!)
                         : MemoryImage(kTransparentImage) as ImageProvider,
                       fit: BoxFit.cover,
                       errorBuilder: (context, child, exception) {

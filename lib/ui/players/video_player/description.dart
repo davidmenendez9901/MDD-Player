@@ -13,6 +13,7 @@ import 'package:songtube/ui/animations/animated_icon.dart';
 import 'package:songtube/ui/text_styles.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class VideoPlayerDescription extends StatefulWidget {
   const VideoPlayerDescription({
@@ -124,7 +125,7 @@ class _VideoPlayerDescriptionState extends State<VideoPlayerDescription> {
                         borderRadius: BorderRadius.circular(10),
                         child: FadeInImage(
                           placeholder: MemoryImage(kTransparentImage),
-                          image: NetworkImage(segment.previewUrl!),
+                          image: stImageProvider(segment.previewUrl!),
                           fadeInDuration: const Duration(milliseconds: 300),
                           fit: BoxFit.cover,
                         ),

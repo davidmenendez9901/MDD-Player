@@ -70,6 +70,12 @@ const enableInAppUpdatesKey = 'enableInAppUpdatesKey';
 // Music-focused search (only music results, no unrelated videos/channels)
 const musicOnlySearchKey = 'musicOnlySearch';
 
+// Data-saving features (PARTE 2 del plan)
+const offlineModeKey = 'offlineMode';
+const dataSaverModeKey = 'dataSaverMode';
+const audioOnlyModeKey = 'audioOnlyMode';
+const preferDownloadedPlaybackKey = 'preferDownloadedPlayback';
+
 class AppSettings extends ChangeNotifier {
 
   // Initialize App Settings
@@ -123,6 +129,30 @@ class AppSettings extends ChangeNotifier {
   static bool get musicOnlySearch => sharedPreferences.getBool(musicOnlySearchKey) ?? true;
   static set musicOnlySearch(bool value) {
     sharedPreferences.setBool(musicOnlySearchKey, value);
+  }
+
+  // Offline mode: when ON the app must not reach the network at all
+  static bool get offlineMode => sharedPreferences.getBool(offlineModeKey) ?? false;
+  static set offlineMode(bool value) {
+    sharedPreferences.setBool(offlineModeKey, value);
+  }
+
+  // Data saver: low resolution thumbnails, skip palette generation from network
+  static bool get dataSaverMode => sharedPreferences.getBool(dataSaverModeKey) ?? false;
+  static set dataSaverMode(bool value) {
+    sharedPreferences.setBool(dataSaverModeKey, value);
+  }
+
+  // Audio-only playback by default (video only on explicit user request)
+  static bool get audioOnlyMode => sharedPreferences.getBool(audioOnlyModeKey) ?? true;
+  static set audioOnlyMode(bool value) {
+    sharedPreferences.setBool(audioOnlyModeKey, value);
+  }
+
+  // Prefer playing the local downloaded file over streaming when available
+  static bool get preferDownloadedPlayback => sharedPreferences.getBool(preferDownloadedPlaybackKey) ?? true;
+  static set preferDownloadedPlayback(bool value) {
+    sharedPreferences.setBool(preferDownloadedPlaybackKey, value);
   }
 
   // FFmpeg Default Task

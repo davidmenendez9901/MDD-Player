@@ -36,6 +36,7 @@ import 'package:songtube/ui/text_styles.dart';
 import 'package:songtube/ui/tiles/text_field_tile.dart';
 import 'package:songtube/ui/ui_utils.dart';
 import 'package:validators/validators.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class AudioDownloadMenu extends StatefulWidget {
   final YoutubeVideo video;
@@ -188,7 +189,7 @@ class _AudioDownloadMenuState extends State<AudioDownloadMenu> with TickerProvid
                                     fadeDuration: const Duration(milliseconds: 300),
                                     placeholder: Container(color: Theme.of(context).scaffoldBackgroundColor),
                                     image: isURL(mainTags.artwork)
-                                      ? NetworkImage(mainTags.artwork) as ImageProvider
+                                      ? stImageProvider(mainTags.artwork) as ImageProvider
                                       : FileImage(File(mainTags.artwork)),
                                     fit: BoxFit.cover,
                                   ),
@@ -1046,7 +1047,7 @@ class _AudioDownloadMenuState extends State<AudioDownloadMenu> with TickerProvid
                       fadeDuration: const Duration(milliseconds: 300),
                       placeholder: Container(color: Theme.of(context).cardColor),
                       image: isURL(segment.audioTags.artwork)
-                        ? NetworkImage(segment.audioTags.artwork) as ImageProvider
+                        ? stImageProvider(segment.audioTags.artwork) as ImageProvider
                         : FileImage(File(segment.audioTags.artwork)),
                       fit: BoxFit.cover,
                     ),

@@ -106,6 +106,10 @@ dependencies:
   # Audio session configuration (music attributes, focus, routing)
   audio_session: ^0.1.13
 
+  # Disk-cached network images (thumbnails are fetched once)
+  cached_network_image: ^3.3.1
+  flutter_cache_manager: ^3.3.1
+
   # Some Fancy Icons
   eva_icons_flutter: ^3.0.2
   font_awesome_flutter: ^10.1.0

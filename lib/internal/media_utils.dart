@@ -25,6 +25,9 @@ import 'package:songtube/internal/enums/download_type.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/internal/models/audio_tags.dart';
 import 'package:songtube/internal/models/colors_palette.dart';
+import 'package:songtube/internal/network/network_manager.dart';
+import 'package:songtube/providers/app_settings.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 import 'package:songtube/internal/models/download/download_info.dart';
 import 'package:songtube/internal/models/song_item.dart';
 
@@ -219,9 +222,13 @@ class MediaUtils {
     if (palette != null) {
       return ColorsPalette.fromJson(palette);
     } else {
+      // Data saver / offline: skip the network fetch and use default colors
+      if (NetworkManager.isOffline || AppSettings.dataSaverMode) {
+        return null;
+      }
       try {
         Stopwatch paletteStopwatch = Stopwatch()..start();
-        final result = await PaletteGenerator.fromImageProvider(NetworkImage(video.videoInfo.thumbnails!.first));
+        final result = await PaletteGenerator.fromImageProvider(stImageProvider(video.videoInfo.thumbnails!.first));
         paletteStopwatch.stop();
         if (kDebugMode) {
           print('Palette: ${paletteId(video.videoInfo.id!)} took ${paletteStopwatch.elapsed.inMilliseconds}ms');

@@ -12,6 +12,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/internal/models/content_wrapper.dart';
 import 'package:songtube/internal/models/playback_quality.dart';
+import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/main.dart';
 import 'package:songtube/providers/app_settings.dart';
@@ -28,6 +29,7 @@ import 'package:songtube/ui/ui_utils.dart';
 import 'package:video_player/video_player.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   const VideoPlayerWidget({
@@ -269,6 +271,10 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void loadVideo({Duration? position}) async {
+    // Offline mode: remote streams must not be loaded
+    if (NetworkManager.isOffline) {
+      return;
+    }
     Future.delayed(const Duration(seconds: 2), () {
       setState(() => hideControls = true);
     });
@@ -514,7 +520,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             fadeDuration: const Duration(milliseconds: 300),
             placeholder: const ShimmerContainer(height: null, width: null),
             fit: BoxFit.cover,
-            image: NetworkImage(widget.content.videoDetails?.videoInfo.thumbnails?.last ?? '')),
+            image: stImageProvider(widget.content.videoDetails?.videoInfo.thumbnails?.last ?? '')),
         ),
         if (!audioOnly)
         Center(

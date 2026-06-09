@@ -18,6 +18,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:songtube/internal/models/content_wrapper.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/main.dart';
+import 'package:songtube/providers/app_settings.dart';
 import 'package:songtube/providers/content_provider.dart';
 import 'package:songtube/providers/download_provider.dart';
 import 'package:songtube/screens/channel.dart';
@@ -64,18 +65,28 @@ class _VideoPlayerContentState extends State<VideoPlayerContent> with TickerProv
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final url = widget.videoDetails?.videoInfo.url;
       if (url != null) {
-        loadComments(url);
+        // Audio-only/data saver: comments are loaded on demand only
+        // (see _body), suggestions still load to keep autoplay working
+        if (!AppSettings.audioOnlyMode && !AppSettings.dataSaverMode) {
+          loadComments(url);
+        }
         loadSuggestions(url);
       }
     });
     super.initState();
   }
 
-  @override 
+  // Whether comments were already requested for the current video
+  bool commentsRequested = false;
+
+  @override
   void didUpdateWidget(covariant VideoPlayerContent oldWidget) {
     if (oldWidget.videoDetails?.videoInfo.url != widget.videoDetails?.videoInfo.url) {
+      commentsRequested = false;
       if (widget.videoDetails?.videoInfo.url != null) {
-        loadComments(widget.videoDetails!.videoInfo.url!);
+        if (!AppSettings.audioOnlyMode && !AppSettings.dataSaverMode) {
+          loadComments(widget.videoDetails!.videoInfo.url!);
+        }
         loadSuggestions(widget.videoDetails!.videoInfo.url!);
       } else {
         setState(() {
@@ -167,6 +178,12 @@ class _VideoPlayerContentState extends State<VideoPlayerContent> with TickerProv
         SliverToBoxAdapter(
           child: GestureDetector(
             onTap: () {
+              // Deferred in audio-only/data saver: fetch on first request
+              final url = widget.videoDetails?.videoInfo.url;
+              if (!commentsRequested && comments.isEmpty && url != null) {
+                commentsRequested = true;
+                loadComments(url);
+              }
               contentProvider.showComments = true;
             },
             child: Padding(

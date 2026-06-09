@@ -42,14 +42,14 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 | 6. Modo Offline | 6.2 UI del switch | ✅ | Toggle en AppBar del home (icono nube con indicador) + Ajustes. |
 | 6. Modo Offline | 6.3 Comportamiento offline | ✅ | Snackbars informativos; biblioteca local intacta; recarga al volver online. |
 | 6. Modo Offline | 6.4 Verificación | ⬜ | ⏭️ Requiere dispositivo: ciclo on/off + captura de tráfico. |
-| 7. Audio-only | 7.1 Reproducción audio directa | ⬜ | Por defecto ON. |
-| 7. Audio-only | 7.2 Evitar datos de video | ⬜ | |
-| 7. Audio-only | 7.3 Miniaturas ligeras | ⬜ | |
-| 7. Audio-only | 7.4 Verificación | ⬜ | |
-| 8. Redes lentas | 8.1 Reproducir local si existe | ⬜ | |
-| 8. Redes lentas | 8.2 Priorizar local en UI | ⬜ | |
-| 8. Redes lentas | 8.3 Resiliencia de red | ⬜ | |
-| 8. Redes lentas | 8.4 Verificación | ⬜ | |
+| 7. Audio-only | 7.1 Reproducción audio directa | ✅ | "Audio Only" calidad por defecto + garantía sin fallback a video. |
+| 7. Audio-only | 7.2 Evitar datos de video | ✅ | Comentarios bajo demanda en audio-only/dataSaver; sugerencias se mantienen (autoplay). |
+| 7. Audio-only | 7.3 Miniaturas ligeras | ✅ | `lowRes()` → `mqdefault` automático en todos los sitios migrados. |
+| 7. Audio-only | 7.4 Verificación | ⬜ | Requiere dispositivo (medición de datos). |
+| 8. Redes lentas | 8.1 Reproducir local si existe | ✅ | Match por `videoId` (URL) en `loadVideoPlayer` → music player local. |
+| 8. Redes lentas | 8.2 Priorizar local en UI | ⬜ | Opcional: icono "descargado" en resultados. |
+| 8. Redes lentas | 8.3 Resiliencia de red | ✅ | Retry con resume + timeout 30s en httpClient (fix del estancamiento). |
+| 8. Redes lentas | 8.4 Verificación | ⬜ | Requiere dispositivo. |
 | 9. Cierre | 9.1 Pruebas integradas | ⬜ | |
 | 9. Cierre | 9.2 Documentación | ⬜ | |
 
@@ -101,6 +101,12 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
   - **6.2:** toggle rápido en la AppBar del home (nube tachada coloreada cuando activo + snackbar) y `SettingTileCheckbox` en Ajustes; al desactivar se recargan trending y feed.
   - **6.3:** biblioteca/reproducción local intactas offline; mensajes claros al intentar buscar/descargar.
   - **5.4:** `flutter analyze` 0 errores; `flutter build apk --debug` OK.
+- `2026-06-09` — **FASES 7 y 8 (parcial, código completo):**
+  - **7.2:** en audio-only/dataSaver los **comentarios solo se cargan al tocarlos** (`video_content.dart`, flag `commentsRequested`); las sugerencias se mantienen para que autoplay funcione.
+  - **7.3:** cubierto por `lowRes()` del Sprint 5.3 (audio-only ON por defecto → todas las miniaturas en `mqdefault`).
+  - **8.1:** `loadVideoPlayer` comprueba `downloadedSongs` por `videoId` (la URL del video se persiste al descargar) y, con `preferDownloadedPlayback` (ON por defecto), reproduce el archivo local en el music player con snackbar "sin usar datos". Funciona también offline.
+  - **8.3:** ya cubierto por el fix del estancamiento de descargas (retry+resume+timeout en `httpClient.dart` del pub-cache).
+  - Pendiente: 8.2 (badge "descargado" en resultados, opcional) y verificaciones 6.4/7.4/8.4 en dispositivo.
 - `2026-06-09` — **Garantía "nunca video sin permiso explícito" (petición del usuario):** auditadas todas las rutas — las listas de calidades solo construyen URLs desde metadata ya descargada; el único camino que auto-cargaba video era el fallback a muxed 360p introducido para los 403 de PoToken. Reemplazado: ante un stream de audio muerto ahora se prueban los **demás streams de audio** del video (hay ~5 itags), uno a uno, y si todos fallan el reproductor queda en error — **jamás carga un stream de video automáticamente**. El video solo se carga si el usuario elige una calidad de video en el selector. Commit `11a6c7b` + este cambio.
 
 ---

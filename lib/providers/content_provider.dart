@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:collection/collection.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:songtube/internal/models/channel_subscription.dart';
 import 'package:songtube/internal/network/network_manager.dart';
 import 'package:songtube/providers/app_settings.dart';
+import 'package:songtube/providers/download_provider.dart';
+import 'package:songtube/providers/media_provider.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/internal/models/channel_data.dart';
 import 'package:songtube/internal/models/content_wrapper.dart';
@@ -151,6 +156,24 @@ class ContentProvider extends ChangeNotifier {
   Future<void> loadVideoPlayer(dynamic infoItem, {String? previousUrl}) async {
     if (infoItem == null) {
       return;
+    }
+    // Prefer the local downloaded file over streaming: if this stream was
+    // already downloaded, play it in the music player (no network needed)
+    if (AppSettings.preferDownloadedPlayback && infoItem is StreamInfoItem && infoItem.url != null) {
+      final context = navigatorKey.currentState!.context;
+      final downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
+      final localSong = downloadProvider.downloadedSongs
+        .firstWhereOrNull((song) => song.videoId == infoItem.url && File(song.id).existsSync());
+      if (localSong != null) {
+        final mediaProvider = Provider.of<MediaProvider>(context, listen: false);
+        Provider.of<UiProvider>(context, listen: false).currentPlayer = CurrentPlayer.music;
+        mediaProvider.currentPlaylistName = 'Downloads';
+        await mediaProvider.playSong([localSong.mediaItem], 0);
+        showSnackbar(customSnackBar: const CustomSnackBar(
+          icon: Icons.offline_pin_rounded,
+          title: 'Reproduciendo descarga local, sin usar datos'));
+        return;
+      }
     }
     // Switch to VideoPlayer
     Provider.of<UiProvider>(navigatorKey.currentState!.context, listen: false).currentPlayer = CurrentPlayer.video;

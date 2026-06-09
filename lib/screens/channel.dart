@@ -43,14 +43,18 @@ class _ChannelPageState extends State<ChannelPage> with TickerProviderStateMixin
   bool fetchingNextPage = false;
 
   Future<void> loadChannel() async {
-    // Offline mode: channel info needs the network, explain and close
+    // Offline mode: channel info needs the network, explain and close.
+    // Deferred to post-frame: loadChannel runs from initState and snack
+    // bars cannot be shown during build
     if (NetworkManager.isOffline) {
-      showSnackbar(customSnackBar: const CustomSnackBar(
-        icon: Icons.cloud_off_rounded,
-        title: 'Modo offline activo, los canales necesitan internet'));
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnackbar(customSnackBar: const CustomSnackBar(
+          icon: Icons.cloud_off_rounded,
+          title: 'Modo offline activo, los canales necesitan internet'));
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      });
       return;
     }
     if (widget.channel == null) {
@@ -87,7 +91,7 @@ class _ChannelPageState extends State<ChannelPage> with TickerProviderStateMixin
   }
 
   void loadChannelNextPage() async {
-    if (fetchingNextPage) {
+    if (fetchingNextPage || NetworkManager.isOffline) {
       return;
     }
     setState(() {

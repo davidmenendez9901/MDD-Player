@@ -41,7 +41,7 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 | 6. Modo Offline | 6.1 Guards de red | ✅ | Búsqueda, trending, feed, fetch de contenido, descargas, players, updater, imágenes. |
 | 6. Modo Offline | 6.2 UI del switch | ✅ | Toggle en AppBar del home (icono nube con indicador) + Ajustes. |
 | 6. Modo Offline | 6.3 Comportamiento offline | ✅ | Snackbars informativos; biblioteca local intacta; recarga al volver online. |
-| 6. Modo Offline | 6.4 Verificación | ⬜ | ⏭️ Requiere dispositivo: ciclo on/off + captura de tráfico. |
+| 6. Modo Offline | 6.4 Verificación | 🔄 | Sesión offline real del usuario sin excepciones (tras 2 fixes); falta medición de tráfico formal. |
 | 7. Audio-only | 7.1 Reproducción audio directa | ✅ | "Audio Only" calidad por defecto + garantía sin fallback a video. |
 | 7. Audio-only | 7.2 Evitar datos de video | ✅ | Comentarios bajo demanda en audio-only/dataSaver; sugerencias se mantienen (autoplay). |
 | 7. Audio-only | 7.3 Miniaturas ligeras | ✅ | `lowRes()` → `mqdefault` automático en todos los sitios migrados. |
@@ -108,6 +108,7 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
   - **8.3:** ya cubierto por el fix del estancamiento de descargas (retry+resume+timeout en `httpClient.dart` del pub-cache).
   - **8.2:** badge `offline_pin` en la miniatura de los streams ya descargados (`stream_tile.dart`, match por `videoId`); de paso el `errorBuilder` del tile usaba `Image.network` directo (se saltaba caché y offline) → migrado a `stImageProvider`.
   - Pendiente: verificaciones 6.4/7.4/8.4 en dispositivo (reconectar móvil).
+- `2026-06-09` — **Mensajes de modo offline (petición del usuario) + fixes de la prueba real:** snackbars al intentar abrir video/playlist no descargado ("este contenido necesita internet") y canales (aviso + cierre limpio); paginación de búsqueda y de canal bloqueadas offline. El usuario probó el modo offline en vivo y destapó 2 crashes, ambos arreglados: (1) snackbar del canal disparado durante build (initState) → diferido a post-frame; (2) `parseStreamListFromMap` del extractor reventaba con el mapa de error del scroll infinito offline → devuelve lista vacía (⚠️ pub-cache, subir upstream). Segunda sesión offline del usuario: **0 excepciones**. Commits `0e24e01` + `0d1f3b8`.
 - `2026-06-09` — **Garantía "nunca video sin permiso explícito" (petición del usuario):** auditadas todas las rutas — las listas de calidades solo construyen URLs desde metadata ya descargada; el único camino que auto-cargaba video era el fallback a muxed 360p introducido para los 403 de PoToken. Reemplazado: ante un stream de audio muerto ahora se prueban los **demás streams de audio** del video (hay ~5 itags), uno a uno, y si todos fallan el reproductor queda en error — **jamás carga un stream de video automáticamente**. El video solo se carga si el usuario elige una calidad de video en el selector. Commit `11a6c7b` + este cambio.
 
 ---

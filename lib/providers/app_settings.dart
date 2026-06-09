@@ -67,6 +67,9 @@ const enableDynamicColorsKey = 'enableDynamicColorsKey';
 // In-app updates
 const enableInAppUpdatesKey = 'enableInAppUpdatesKey';
 
+// Music-focused search (only music results, no unrelated videos/channels)
+const musicOnlySearchKey = 'musicOnlySearch';
+
 class AppSettings extends ChangeNotifier {
 
   // Initialize App Settings
@@ -113,6 +116,13 @@ class AppSettings extends ChangeNotifier {
   static bool get enableWatchHistory => sharedPreferences.getBool(enableWatchHistoryKey) ?? true;
   static set enableWatchHistory(bool value) {
     sharedPreferences.setBool(enableWatchHistoryKey, value);
+  }
+
+  // Music-focused search: search returns only songs (default ON, the app's
+  // goal is music with minimal data usage)
+  static bool get musicOnlySearch => sharedPreferences.getBool(musicOnlySearchKey) ?? true;
+  static set musicOnlySearch(bool value) {
+    sharedPreferences.setBool(musicOnlySearchKey, value);
   }
 
   // FFmpeg Default Task

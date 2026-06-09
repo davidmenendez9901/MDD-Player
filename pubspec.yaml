@@ -103,6 +103,9 @@ dependencies:
   # Just Audio, to actually play and handle Music
   just_audio: ^0.9.18
 
+  # Audio session configuration (music attributes, focus, routing)
+  audio_session: ^0.1.13
+
   # Some Fancy Icons
   eva_icons_flutter: ^3.0.2
   font_awesome_flutter: ^10.1.0

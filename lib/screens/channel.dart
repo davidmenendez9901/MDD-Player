@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_fade/image_fade.dart';
@@ -40,11 +41,25 @@ class _ChannelPageState extends State<ChannelPage> with TickerProviderStateMixin
 
   Future<void> loadChannel() async {
     if (widget.channel == null) {
-      channel = await widget.infoItem.getChannel;
+      try {
+        channel = await widget.infoItem.getChannel;
+      } catch (_) {
+        // Retry once: extraction can fail transiently
+        try {
+          channel = await widget.infoItem.getChannel;
+        } catch (e) {
+          if (kDebugMode) {
+            print('loadChannel failed: $e');
+          }
+          return;
+        }
+      }
     } else {
       channel = widget.channel;
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void loadChannelUploads() async {

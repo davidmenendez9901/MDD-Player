@@ -27,6 +27,7 @@ class _FinishIntroPageState extends State<FinishIntroPage> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 10), () {
+      if (!mounted) return;
       setState(() {
         forceSkipMediaFetch = true;
       });

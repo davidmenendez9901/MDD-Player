@@ -4,6 +4,7 @@ import 'package:newpipeextractor_dart/utils/url.dart';
 import 'package:provider/provider.dart';
 import 'package:songtube/internal/global.dart';
 import 'package:songtube/languages/languages.dart';
+import 'package:songtube/providers/app_settings.dart';
 import 'package:songtube/main.dart';
 import 'package:songtube/providers/content_provider.dart';
 import 'package:songtube/providers/media_provider.dart';
@@ -59,11 +60,13 @@ class _HomeDefaultState extends State<HomeDefault> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     ContentProvider contentProvider = Provider.of(context);
     UiProvider uiProvider = Provider.of(context);
-    if (tabController.length == 5 && (contentProvider.searchContent == null)) {
-      tabController = TabController(length: 4, vsync: this);
-    }
-    if (tabController.length == 4 && (contentProvider.searchContent != null || contentProvider.searchingContent)) {
-      tabController = TabController(length: 5, vsync: this);
+    // Tab count depends on search state and the music-only mode
+    // (Trending is hidden when music-only is active)
+    final showSearchTab = contentProvider.searchContent != null || contentProvider.searchingContent;
+    final showTrendingTab = !AppSettings.musicOnlySearch;
+    final tabCount = 3 + (showSearchTab ? 1 : 0) + (showTrendingTab ? 1 : 0);
+    if (tabController.length != tabCount) {
+      tabController = TabController(length: tabCount, vsync: this);
     }
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -238,7 +241,8 @@ class _HomeDefaultState extends State<HomeDefault> with TickerProviderStateMixin
         tabs: [
           if (contentProvider.searchContent != null || contentProvider.searchingContent)
           Tab(child: Text(Languages.of(context)!.labelSearch)),
-          // Trending
+          // Trending (hidden in music-only mode)
+          if (!AppSettings.musicOnlySearch)
           Tab(child: Text(Languages.of(context)!.labelTrending)),
           // Subscriptions
           Tab(child: Text(Languages.of(context)!.labelSubscriptions)),
@@ -256,12 +260,13 @@ class _HomeDefaultState extends State<HomeDefault> with TickerProviderStateMixin
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: TabBarView(
-        key: ValueKey((contentProvider.searchContent != null || contentProvider.searchingContent) ? 'tabBar5' : 'tabBar4'),
+        key: ValueKey('tabBar${tabController.length}'),
         controller: tabController,
         children: [
           if (contentProvider.searchContent != null || contentProvider.searchingContent)
           const SearchPage(),
-          // Trending Page
+          // Trending Page (hidden in music-only mode)
+          if (!AppSettings.musicOnlySearch)
           const TrendingPage(),
           // Subscriptions Page
           const SubscriptionsPage(),

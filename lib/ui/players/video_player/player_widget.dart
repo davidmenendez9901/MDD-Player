@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_fade/image_fade.dart';
@@ -62,6 +63,10 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool interfaceLocked = false;
   bool audioOnly = false;
 
+  // Whether we already fell back from a dead audio-only stream (YouTube 403)
+  // to the muxed stream for the current video
+  bool audioOnlyFallbackTried = false;
+
   // Reverse and Forward Animation
   bool showReverse = false;
   bool showForward = false;
@@ -75,17 +80,20 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       _youtubeVideo = null;
       finishedPlaying = false;
       showAutoplay = false;
-      controller?.removeListener(() { });
-      controller?.dispose().then((value) {
-        setState(() {
-          controller = null;
-        });
-      });
+      // Clear the reference synchronously so a re-entrant call can't
+      // dispose the same controller twice
+      final oldController = controller;
+      controller = null;
+      oldController?.dispose();
+      if (mounted) {
+        setState(() {});
+      }
     } else {
       if (youtubeVideo != video) {
         _youtubeVideo = video;
         finishedPlaying = false;
         currentQuality = null;
+        audioOnlyFallbackTried = false;
         loadVideo();
       }
     }
@@ -265,12 +273,18 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     finishedPlaying = false;
     showAutoplay = false;
     lockPlayer = true;
-    if (controller != null) {
-      controller!.removeListener(() { });
-    }
+    // Release the previous controller (and its native codec) before
+    // creating a new one on video/quality change
+    final oldController = controller;
+    controller = null;
+    oldController?.dispose();
     // Choose video quality
-    currentQuality ??= widget.content.videoOptions!.firstWhere((element) => element.resolution.contains(AppSettings.lastVideoQuality), orElse: () {
-      return widget.content.videoOptions!.last;
+    // Audio Only por defecto para minimizar el consumo de datos: el stream
+    // de video solo se carga cuando el usuario elige una calidad explícitamente
+    currentQuality ??= widget.content.videoOptions!.firstWhere((element) => element.videoUrl == null, orElse: () {
+      // Sin opción audio-only: usar la mejor calidad con video real
+      return widget.content.videoOptions!.lastWhere((element) => element.videoUrl != null,
+        orElse: () => widget.content.videoOptions!.last);
     });
     if (currentQuality!.resolution == 'Audio Only') {
       audioOnly = true;
@@ -278,10 +292,42 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       audioOnly = false;
     }
     setState(() {});
+    if (kDebugMode) {
+      print('PLAYER res=${currentQuality!.resolution}');
+      print('PLAYER videoUrl=${currentQuality!.videoUrl}');
+      print('PLAYER audioUrl=${currentQuality!.audioUrl}');
+    }
+    // The native player requires a non-null videoDataSource; for audio-only
+    // qualities feed it the audio stream as the main source
     controller = VideoPlayerController.network(
-      videoDataSource: currentQuality!.videoUrl,
-      audioDataSource: currentQuality!.audioUrl
+      videoDataSource: currentQuality!.videoUrl ?? currentQuality!.audioUrl,
+      audioDataSource: currentQuality!.videoUrl != null ? currentQuality!.audioUrl : null
     );
+    controller?.addListener(() {
+      final err = controller?.value.errorDescription;
+      if (err == null) {
+        return;
+      }
+      if (kDebugMode) {
+        print('PLAYER ERROR: $err');
+      }
+      // YouTube rejects some audio-only stream URLs outright (403, PoToken
+      // enforcement on the iOS client). Fall back to the muxed stream, which
+      // comes from a different client and still works
+      if (!audioOnlyFallbackTried && currentQuality?.videoUrl == null) {
+        audioOnlyFallbackTried = true;
+        final muxed = widget.content.videoOptions!.lastWhere(
+          (element) => element.videoUrl != null,
+          orElse: () => currentQuality!);
+        if (!identical(muxed, currentQuality)) {
+          if (kDebugMode) {
+            print('PLAYER audio-only stream dead, falling back to muxed ${muxed.resolution}p');
+          }
+          currentQuality = muxed;
+          loadVideo();
+        }
+      }
+    });
     controller?.initialize().then((_) async {
       if (position != null) {
         await controller?.seekTo(position);

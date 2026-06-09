@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:newpipeextractor_dart/extractors/videos.dart';
 import 'package:newpipeextractor_dart/models/videoInfo.dart';
@@ -37,8 +39,18 @@ MediaControl stopControl = const MediaControl(
 class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   StAudioHandler() {
+    _configureAudioSession();
     _notifyAudioHandlerAboutPlaybackEvents();
     _handlePlaybackCompleted();
+  }
+
+  // Declare this session as music playback (proper audio attributes,
+  // focus handling and routing)
+  Future<void> _configureAudioSession() async {
+    try {
+      final session = await AudioSession.instance;
+      await session.configure(const AudioSessionConfiguration.music());
+    } catch (_) {}
   }
 
   // Video Player Background Playback stuff
@@ -91,6 +103,20 @@ class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
         speed: _player.speed,
         queueIndex: _index,
       ));
+    }, onError: (Object e, StackTrace st) async {
+      // Decoder/source failures must not leave the player unresponsive:
+      // surface a paused state so the user keeps control
+      if (kDebugMode) {
+        print('AudioPlayer error: $e');
+      }
+      try {
+        await _player.stop();
+      } catch (_) {}
+      playbackState.add(playbackState.value.copyWith(
+        controls: getControls(),
+        processingState: AudioProcessingState.error,
+        playing: false,
+      ));
     });
   }
 
@@ -100,7 +126,10 @@ class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       artwork = await ArtworkManager.writeArtwork(mediaItem.id);
     } catch (_) {}
     final item = mediaItem.copyWith(artUri: artwork != null && !backgroundPlaybackEnabled ? Uri.parse('file://${artwork.path}') : mediaItem.artUri);
-    return AudioSource.file(mediaItem.id, tag: item);
+    // Use AudioSource.uri directly: just_audio 0.9.31's AudioSource.file
+    // accepts a tag but silently drops it, leaving the MediaSession
+    // without metadata (no title/controls in the notification)
+    return AudioSource.uri(Uri.file(mediaItem.id), tag: item);
   }
 
   void _handlePlaybackCompleted() {
@@ -117,7 +146,14 @@ class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
             skipToQueueItem(randomIndex);
           }
         } else {
-          skipToNext();
+          if (hasNext) {
+            skipToNext();
+          } else {
+            // End of queue: rewind and pause so the player stays responsive
+            // instead of lingering in a completed/playing limbo
+            await _player.pause();
+            await _player.seek(Duration.zero);
+          }
         }
       }
     });
@@ -173,7 +209,11 @@ class StAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       mediaItem.add(audioSource.tag);
       await _player.setAudioSource(audioSource);
       await play();
-    } catch (_) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print('skipToQueueItem error: $e');
+      }
+    }
   }
 
   @override

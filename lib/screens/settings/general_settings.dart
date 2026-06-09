@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:songtube/internal/media_utils.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/providers/app_settings.dart';
+import 'package:songtube/providers/content_provider.dart';
 import 'package:songtube/providers/media_provider.dart';
 import 'package:songtube/providers/ui_provider.dart';
 import 'package:songtube/ui/sheets/snack_bar.dart';
@@ -95,6 +96,22 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             mediaProvider.updateState();
           },
           value: AppSettings.enableDynamicColors,
+        ),
+        const SizedBox(height: 12),
+        // Music-focused search
+        SettingTileCheckbox(
+          leadingIcon: EvaIcons.musicOutline,
+          title: 'Solo música',
+          subtitle: 'Las búsquedas muestran únicamente canciones y se oculta la pestaña de tendencias',
+          onChange: (_) {
+            AppSettings.musicOnlySearch = !AppSettings.musicOnlySearch;
+            // Trending tab reappears when leaving music-only mode: load it
+            if (!AppSettings.musicOnlySearch) {
+              Provider.of<ContentProvider>(context, listen: false).refreshTrendingPage();
+            }
+            mediaProvider.updateState();
+          },
+          value: AppSettings.musicOnlySearch,
         ),
         const SizedBox(height: 12),
         // App's font family

@@ -254,16 +254,26 @@ class DownloadItem {
     int totalDownloaded = 0;
     // Start stream download while updating internal
     // BehaviorSubject for external access
-    await for (var data in streamData) {
-      if (canceled) {
-        ioSink.close();
-        downloadStatus.add('Canceled');
-        onDownloadCancelled(id);
-        return null;
+    try {
+      await for (var data in streamData) {
+        if (canceled) {
+          ioSink.close();
+          downloadStatus.add('Canceled');
+          onDownloadCancelled(id);
+          return null;
+        }
+        totalDownloaded += data.length;
+        downloadProgress.add((totalDownloaded/streamToDownload.size));
+        ioSink.add(data);
       }
-      totalDownloaded += data.length;
-      downloadProgress.add((totalDownloaded/streamToDownload.size));
-      ioSink.add(data);
+    } catch (e) {
+      // Stream failed permanently (retries exhausted): fail this download
+      // gracefully instead of leaving it stuck forever
+      errorMessage = e.toString();
+      await ioSink.close();
+      downloadProgress.add(null);
+      downloadStatus.add('Error');
+      return null;
     }
     await ioSink.flush();
     await ioSink.close();

@@ -19,7 +19,7 @@
 
 > **Cómo retomar:** mira la columna *Estado* en la tabla de abajo, busca el ⏭️ (próximo sprint), y continúa desde ahí. Al terminar un sprint: marca sus checkboxes `[x]`, cambia su fila a ✅, mueve el ⏭️ al siguiente, actualiza la fecha y añade una línea a la **Bitácora**.
 
-> 👉 **PRÓXIMO PASO:** Sprint 2.2 — instalar `build/app/outputs/flutter-apk/app-debug.apk` (238 MB) en un dispositivo Android real y verificar arranque + permisos. **Ojo:** muchos fixes viven en `~/.pub-cache` (ver bitácora) — no ejecutar `flutter pub cache clean/repair` ni cambiar refs de git deps sin antes subir los fixes upstream.
+> 👉 **PRÓXIMO PASO:** Sprint 3.1 — completar verificación de reproducción: audio en background (`audio_service`), trending, canales y playlists. Búsqueda y video ya verificados en dispositivo. **Ojo:** muchos fixes viven en `~/.pub-cache` (ver bitácora) — no ejecutar `flutter pub cache clean/repair` ni cambiar refs de git deps sin antes subir los fixes upstream.
 
 Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 
@@ -29,8 +29,8 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 | 1. Compilación | 1.2 Flutter 3.44 (`TabBarThemeData`) | ✅ | 3 archivos de tema. **0 errores totales.** |
 | 1. Compilación | 1.3 Validación de build | ✅ | `analyze` 0 errores + APK debug construido. Commit `69f9cc0`. |
 | 2. Build Android | 2.1 Alinear toolchain | ✅ | Gradle 8.10.2 + AGP 8.7.0 + JDK 17 + ~20 parches en pub-cache. **APK: 238 MB.** |
-| 2. Build Android | 2.2 Validación en dispositivo | ⬜ | ⏭️ **AQUÍ** — instalar APK, permisos, arranque. |
-| 3. Verif. funcional | 3.1 Reproducción | ⬜ | Requiere dispositivo + red. |
+| 2. Build Android | 2.2 Validación en dispositivo | ✅ | Galaxy S24 Ultra vía wireless adb. Arranque OK, permisos OK. |
+| 3. Verif. funcional | 3.1 Reproducción | 🔄 | ⏭️ **AQUÍ** — búsqueda ✅, video 360p ✅, audio-only ✅, comentarios ✅. Falta: audio background, trending, canales, playlists. |
 | 3. Verif. funcional | 3.2 Descarga | ⬜ | |
 | 4. Limpieza | 4.1 Deprecaciones | ⬜ | Opcional (411 warnings). |
 | 4. Limpieza | 4.2 SDK constraint | ⬜ | Opcional. |
@@ -73,6 +73,26 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
   10. `sensors_plus`: nulabilidad de `getDefaultSensor` (SDK 34) → `Sensor?`.
 - `2026-06-09` — ✅ **`flutter build apk --debug` EXITOSO** → `build/app/outputs/flutter-apk/app-debug.apk` (238 MB). Sprints 1.3 y 2.1 cerrados.
   - ⚠️ **Todos los parches en `~/.pub-cache` se pierden si se re-fetchean los paquetes** (`flutter pub cache clean/repair` o cambio de ref). Mitigación pendiente: subir fixes upstream (git deps propios: NewPipeExtractor_Dart, apk_installer) y/o fork+pin o vendorizar los plugins de pub.dev abandonados.
+- `2026-06-09` — **Sprint 2.2 ✅:** `flutter run` por wireless adb en Galaxy S24 Ultra (SM-S928U1). Instalación 47s, arranque sin crashes, intro completado, `READ_MEDIA_AUDIO` + foreground services concedidos.
+- `2026-06-09` — Fix: `setState() after dispose()` en `finish_page.dart:30` (timer de 10s del intro) → check de `mounted`.
+- `2026-06-09` — **Fix crash de reproducción** (`NullPointerException: uriString` en el fork de video_player): YouTube ahora devuelve 1 solo stream muxed (360p); `lastVideoQuality` por defecto es '720' y el `orElse` de `loadVideo` caía en "Audio Only" (`videoUrl=null`), que el lado nativo no tolera (`Uri.parse(null)` en `VideoPlayer.java:94`). Doble fix en `player_widget.dart`: (1) el fallback elige la mejor calidad con `videoUrl != null`; (2) si la calidad es audio-only, se pasa el audio como `videoDataSource`. **Verificado en dispositivo:** video 360p ✅ y "Audio Only" explícito ✅, sin excepciones.
+- `2026-06-09` — Sprint 3.1 parcial: búsqueda ✅, fetch de video ✅ (16 videoOnly + 5 audio + 1 muxed), comentarios ✅.
+- `2026-06-09` — Fix: "VideoPlayerController was used after being disposed" al cerrar el reproductor (`player_widget.dart:80`): el setter `youtubeVideo=null` disponía el controller pero solo lo anulaba en el `.then()` asíncrono → doble dispose en llamadas re-entrantes. Ahora se anula la referencia sincrónicamente antes de disponer (protege también el `dispose()` del widget). Bonus: `loadVideo()` ahora libera el controller anterior (códec nativo) al cambiar de video/calidad — antes se fugaba.
+- `2026-06-09` — **Adelanto de Fase 7 (decisión del usuario):** "Audio Only" es ahora la calidad por defecto al abrir cualquier video (`player_widget.dart` `loadVideo`). El stream de video solo se carga si el usuario elige una calidad explícitamente en el selector. Objetivo: mínimo consumo de datos desde ya, sin esperar a la infraestructura de Fase 5.
+- `2026-06-09` — **Fix descarga estancada (Sprint 3.2):** las descargas se quedaban congeladas a los pocos cientos de KB y nunca llegaban a `/storage/emulated/0/Music`. Causa: en `httpClient.dart` de NewPipeExtractor_Dart, `onError: (_) => null` tragaba los errores de stream (cortes de googlevideo) y el `StreamController` nunca cerraba → `await for` colgado para siempre. Fix en pub-cache (⚠️ subir upstream): forwarding directo de chunks con timeout de inactividad de 30 s, lo que activa el retry-con-resume que ya existía. Además `download_item.dart` ahora captura el fallo definitivo (5 retries agotados) y marca la descarga como error en vez de dejarla colgada.
+- `2026-06-09` — **Fix crash al abrir canal (Sprint 3.1):** `NoSuchMethodError: '[]' on null` en `ChannelExtractor.channelInfo`. Causa raíz: race condition en `YoutubeChannelExtractorImpl.java` — el extractor se guardaba en un campo compartido de la clase y llamadas concurrentes (`getChannel` + `getChannelUploads` desde el pool de hilos del plugin) lo reasignaban a mitad de uso → "Page is not fetched". Triple fix (⚠️ los 2 primeros en pub-cache, subir upstream): extractor local en Java, excepción limpia en `channels.dart` si el mapa trae `error`, y try/catch con 1 retry en `channel.dart` de la app.
+- `2026-06-09` — **Fix 403 en reproducción (Sprint 3.1):** algunos videos daban `InvalidResponseCodeException: 403` en ExoPlayer (otros funcionaban). Causa: las URLs de googlevideo pueden quedar ligadas al User-Agent que las generó; el extractor usa Firefox 78 (`DownloaderImpl.USER_AGENT`) pero el fork de video_player mandaba `setUserAgent("ExoPlayer")`. Fix en pub-cache (⚠️ subir upstream a `SongTube/video_player`): UA igualado en `VideoPlayer.java buildFactory`.
+- `2026-06-09` — Anotación: videos con restricción de edad fallan con `AgeRestrictedContentException` ("cannot be watched anonymously") — limitación de YouTube sin login, la app lo captura sin crash. Mejora futura posible: mostrar mensaje claro al usuario.
+- `2026-06-09` — **Diagnóstico definitivo del 403 (PoToken):** probada la URL del stream audio-only desde el propio móvil con curl (misma IP, UAs Firefox e iOS): 403 siempre → **la URL nace muerta**. Los streams del cliente iOS (`c=IOS`, `rqh=1`) requieren PoToken (botguard) que el extractor no genera. Patrón confirmado por el usuario: si el video reproduce, también descarga; si no, nada. El UA-matching del fix anterior no era suficiente (se mantiene de todas formas, es correcto).
+- `2026-06-09` — Mitigaciones: (1) extractor actualizado a **v0.26.3** (release de hoy mismo); (2) **fallback automático en el reproductor**: si el stream audio-only da error de fuente, cambia solo al stream muxed 360p (viene de otro cliente y sí funciona) — `player_widget.dart`, flag `audioOnlyFallbackTried`. ⚠️ Pendiente: las **descargas** de esos videos siguen fallando (usan el mismo stream muerto); mitigación posible: descargar muxed + extraer audio con ffmpeg (infra ya existe en `FFmpegConverter.extractAudio`). **Fix de fondo (futuro): implementar `PoTokenProvider` en el plugin con WebView oculto, como hace la app oficial de NewPipe.** Nota: tras actualizar a v0.26.3 los 4 videos probados reprodujeron sin 403 — el fallback queda como red de seguridad.
+- `2026-06-09` — **Reproductor de música (reporte del usuario: sin controles + "suena como llamada" al acabar). Diagnóstico en dispositivo con dumpsys media_session + instrumentación temporal:**
+  1. **"Sonido de llamada"** = la biblioteca incluía las grabaciones de llamada/buzón de Samsung (`/Recordings/Call/...m4a`); al acabar la canción, el auto-avance reproducía una grabación. Esos m4a malformados además **mataban el decodificador AAC** (`MediaCodecAudioRenderer error` sin manejar) dejando el player sin responder. → Fix: filtro de `/Recordings/` y `/Notifications/` en `media_provider.songs`.
+  2. **Player irrecuperable tras error de decoder** → `onError` en `playbackEventStream` (`audio_service.dart` de la app): detiene el player y publica estado de error manteniendo los controles.
+  3. **Limbo al acabar la cola** (estado PLAYING al final del archivo) → al completar sin siguiente: rewind a 0 + pausa.
+  4. **Metadata null en la MediaSession** (notificación "SongDebug is running" sin título ni info): cazado con traza Dart+Java — **bug de just_audio 0.9.31**: `AudioSource.file(path, tag: item)` acepta `tag` pero lo descarta → `mediaItem.add(null)` → `setMediaItem` nunca se envía. → Fix en `_createAudioSource`: `AudioSource.uri(Uri.file(id), tag: item)`.
+  5. `AudioSession` configurada como música (`AudioSessionConfiguration.music()`) + `audio_session` como dependencia directa.
+  - Verificado en dispositivo: sesión `active=true`, pausa/reanudar por notificación y media keys ✓, grabaciones fuera de la biblioteca ✓.
+- `2026-06-09` — **Modo "Solo música" (petición del usuario, adelanto de Fase 7):** nuevo ajuste `musicOnlySearch` (default ON) en `AppSettings` + toggle en Ajustes generales. Cuando está activo, la búsqueda usa el filtro `music_songs` de NewPipe (catálogo de YouTube Music) → solo canciones, sin videos/canales no musicales. Verificado en dispositivo: búsqueda "shakira" devuelve solo canciones con carátula de álbum. Con el toggle OFF se respetan los filtros manuales de siempre. Además (petición del usuario): con "Solo música" activo la pestaña **Trending se oculta** (`home_default.dart`, contador de tabs dinámico) y su **fetch se omite** al iniciar (`refreshTrendingPage` con early-return → ahorra datos); al desactivar el toggle en Ajustes la pestaña reaparece y el trending se recarga. Verificado en dispositivo: home muestra solo Subscriptions/Playlists/Favorites, 0 excepciones.
 
 ---
 
@@ -138,10 +158,10 @@ Meta: generar APK/instalable en dispositivo real.
 - [ ] Opción B (modernizar): subir Gradle (8.x) y AGP (8.x) para compatibilidad con Java 21 y Flutter 3.44. Mayor riesgo, evaluar después.
 - [ ] Revisar `android/app/build.gradle`: `compileSdk 34`/`targetSdk 34` — evaluar subir a 35 si Flutter 3.44 lo exige.
 
-### Sprint 2.2 — Validación en dispositivo
-- [ ] Instalar APK en dispositivo Android real.
-- [ ] Verificar permisos en runtime (almacenamiento, media, foreground service).
-- [ ] Confirmar arranque sin crashes.
+### Sprint 2.2 — Validación en dispositivo ✅
+- [x] Instalar APK en dispositivo Android real. → Galaxy S24 Ultra vía `flutter run` + wireless adb.
+- [x] Verificar permisos en runtime (almacenamiento, media, foreground service). → `READ_MEDIA_AUDIO` y `FOREGROUND_SERVICE_MEDIA_PLAYBACK` concedidos.
+- [x] Confirmar arranque sin crashes. → OK (un `setState` after dispose en el intro, arreglado).
 
 ---
 
@@ -149,10 +169,10 @@ Meta: generar APK/instalable en dispositivo real.
 
 Meta: confirmar que la extracción sigue operativa con el YouTube actual.
 
-### Sprint 3.1 — Reproducción
-- [ ] Búsqueda de videos (`SearchExtractor`).
+### Sprint 3.1 — Reproducción 🔄
+- [x] Búsqueda de videos (`SearchExtractor`). → Verificado en dispositivo.
 - [ ] Reproducción de audio en background (`just_audio` + `audio_service`).
-- [ ] Reproducción de video (`video_player`, streams muxed).
+- [x] Reproducción de video (`video_player`, streams muxed). → 360p + "Audio Only" OK tras fix del fallback de calidad.
 - [ ] Trending, canales y playlists.
 
 ### Sprint 3.2 — Descarga

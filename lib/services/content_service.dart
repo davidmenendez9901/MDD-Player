@@ -46,7 +46,11 @@ class ContentService {
   // Fetch a Video from StreamItem
   static Future<YoutubeVideo?> fetchVideoFromInfoItem(StreamInfoItem infoItem) async {
     try {
-      return await VideoExtractor.getStream(infoItem.url);
+      final video = await VideoExtractor.getStream(infoItem.url);
+      if (kDebugMode) {
+        print('STREAMS muxed=${video.videoStreams?.length} videoOnly=${video.videoOnlyStreams?.length} audio=${video.audioOnlyStreams?.length}');
+      }
+      return video;
     } catch (e) {
       if (kDebugMode) {
         print(e);

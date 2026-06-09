@@ -102,7 +102,10 @@ class MediaProvider extends ChangeNotifier {
   List<SongItem> _songs = [];
   List<SongItem> get songs {
     final list = _songs.unique((element) => element.id)..sort(((a, b) => a.title.compareTo(b.title)));
-    list.removeWhere((element) => element.id.contains('Android/media') || element.id.contains('Android/data') || element.id.contains('.mp4') || element.id.contains('.webm'));
+    list.removeWhere((element) => element.id.contains('Android/media') || element.id.contains('Android/data') || element.id.contains('.mp4') || element.id.contains('.webm')
+      // Call recordings, voicemails and voice notes are not music and their
+      // malformed m4a containers can crash the audio decoder
+      || element.id.contains('/Recordings/') || element.id.contains('/Notifications/'));
     return list;
   }
   set songs(List<SongItem> items) {

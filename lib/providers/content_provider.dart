@@ -60,7 +60,11 @@ class ContentProvider extends ChangeNotifier {
     searchingContent = true;
     notifyListeners();
     try {
-      searchContent = await SearchExtractor.searchYoutube(query, searchFilters);
+      // Music-focused mode: restrict results to songs only
+      final filters = AppSettings.musicOnlySearch
+        ? [YoutubeSearchFilter.musicSongs]
+        : searchFilters;
+      searchContent = await SearchExtractor.searchYoutube(query, filters);
       addStringtoSearchHistory(query);
     } catch (e) {
       if (kDebugMode) {
@@ -86,6 +90,10 @@ class ContentProvider extends ChangeNotifier {
 
   // Refresh Trending page
   void refreshTrendingPage() {
+    // Music-only mode hides the Trending tab: skip the fetch to save data
+    if (AppSettings.musicOnlySearch) {
+      return;
+    }
     ContentService.getTrendingPage().then((value) {
       trendingVideos = value;
       notifyListeners();

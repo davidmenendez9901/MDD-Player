@@ -63,9 +63,10 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool interfaceLocked = false;
   bool audioOnly = false;
 
-  // Whether we already fell back from a dead audio-only stream (YouTube 403)
-  // to the muxed stream for the current video
-  bool audioOnlyFallbackTried = false;
+  // Alternative audio stream URLs to try when the current audio-only stream
+  // is dead (YouTube 403/PoToken). Audio-only playback NEVER falls back to a
+  // video stream: video data must be an explicit user choice
+  List<String> audioFallbackUrls = [];
 
   // Reverse and Forward Animation
   bool showReverse = false;
@@ -93,7 +94,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _youtubeVideo = video;
         finishedPlaying = false;
         currentQuality = null;
-        audioOnlyFallbackTried = false;
+        audioFallbackUrls = video.audioOnlyStreams
+          ?.map((stream) => stream.url).whereType<String>().toList() ?? [];
         loadVideo();
       }
     }
@@ -311,19 +313,23 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       if (kDebugMode) {
         print('PLAYER ERROR: $err');
       }
-      // YouTube rejects some audio-only stream URLs outright (403, PoToken
-      // enforcement on the iOS client). Fall back to the muxed stream, which
-      // comes from a different client and still works
-      if (!audioOnlyFallbackTried && currentQuality?.videoUrl == null) {
-        audioOnlyFallbackTried = true;
-        final muxed = widget.content.videoOptions!.lastWhere(
-          (element) => element.videoUrl != null,
-          orElse: () => currentQuality!);
-        if (!identical(muxed, currentQuality)) {
+      // YouTube rejects some audio stream URLs outright (403, PoToken
+      // enforcement). Try the remaining audio-only streams, one by one.
+      // NEVER fall back to a video stream: loading video data must always
+      // be an explicit user choice
+      if (currentQuality?.videoUrl == null) {
+        audioFallbackUrls.remove(currentQuality?.audioUrl);
+        if (audioFallbackUrls.isNotEmpty) {
+          final candidate = audioFallbackUrls.removeAt(0);
           if (kDebugMode) {
-            print('PLAYER audio-only stream dead, falling back to muxed ${muxed.resolution}p');
+            print('PLAYER audio stream dead, trying alternate audio stream (${audioFallbackUrls.length} left)');
           }
-          currentQuality = muxed;
+          currentQuality = VideoPlaybackQuality(
+            resolution: 'Audio Only',
+            format: currentQuality!.format,
+            framerate: currentQuality!.framerate,
+            audioUrl: candidate,
+          );
           loadVideo();
         }
       }

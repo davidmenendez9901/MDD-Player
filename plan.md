@@ -47,7 +47,7 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
 | 7. Audio-only | 7.3 Miniaturas ligeras | ✅ | `lowRes()` → `mqdefault` automático en todos los sitios migrados. |
 | 7. Audio-only | 7.4 Verificación | ⬜ | Requiere dispositivo (medición de datos). |
 | 8. Redes lentas | 8.1 Reproducir local si existe | ✅ | Match por `videoId` (URL) en `loadVideoPlayer` → music player local. |
-| 8. Redes lentas | 8.2 Priorizar local en UI | ⬜ | Opcional: icono "descargado" en resultados. |
+| 8. Redes lentas | 8.2 Priorizar local en UI | ✅ | Badge `offline_pin` en miniaturas de streams ya descargados. |
 | 8. Redes lentas | 8.3 Resiliencia de red | ✅ | Retry con resume + timeout 30s en httpClient (fix del estancamiento). |
 | 8. Redes lentas | 8.4 Verificación | ⬜ | Requiere dispositivo. |
 | 9. Cierre | 9.1 Pruebas integradas | ⬜ | |
@@ -106,7 +106,8 @@ Leyenda: ✅ hecho · 🔄 en curso · ⬜ pendiente · ⏭️ próximo
   - **7.3:** cubierto por `lowRes()` del Sprint 5.3 (audio-only ON por defecto → todas las miniaturas en `mqdefault`).
   - **8.1:** `loadVideoPlayer` comprueba `downloadedSongs` por `videoId` (la URL del video se persiste al descargar) y, con `preferDownloadedPlayback` (ON por defecto), reproduce el archivo local en el music player con snackbar "sin usar datos". Funciona también offline.
   - **8.3:** ya cubierto por el fix del estancamiento de descargas (retry+resume+timeout en `httpClient.dart` del pub-cache).
-  - Pendiente: 8.2 (badge "descargado" en resultados, opcional) y verificaciones 6.4/7.4/8.4 en dispositivo.
+  - **8.2:** badge `offline_pin` en la miniatura de los streams ya descargados (`stream_tile.dart`, match por `videoId`); de paso el `errorBuilder` del tile usaba `Image.network` directo (se saltaba caché y offline) → migrado a `stImageProvider`.
+  - Pendiente: verificaciones 6.4/7.4/8.4 en dispositivo (reconectar móvil).
 - `2026-06-09` — **Garantía "nunca video sin permiso explícito" (petición del usuario):** auditadas todas las rutas — las listas de calidades solo construyen URLs desde metadata ya descargada; el único camino que auto-cargaba video era el fallback a muxed 360p introducido para los 403 de PoToken. Reemplazado: ante un stream de audio muerto ahora se prueban los **demás streams de audio** del video (hay ~5 itags), uno a uno, y si todos fallan el reproductor queda en error — **jamás carga un stream de video automáticamente**. El video solo se carga si el usuario elige una calidad de video en el selector. Commit `11a6c7b` + este cambio.
 
 ---

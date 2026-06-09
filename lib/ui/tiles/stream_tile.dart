@@ -5,6 +5,7 @@ import 'package:newpipeextractor_dart/newpipeextractor_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/providers/content_provider.dart';
+import 'package:songtube/providers/download_provider.dart';
 import 'package:songtube/providers/ui_provider.dart';
 import 'package:songtube/screens/channel.dart';
 import 'package:songtube/ui/components/channel_image.dart';
@@ -187,6 +188,9 @@ class StreamTileExpanded extends StatelessWidget {
   }
 
   Widget _thumbnail(context) {
+    // Mark streams that are already downloaded (playable without data)
+    final downloaded = Provider.of<DownloadProvider>(context)
+      .downloadedSongs.any((song) => song.videoId == stream.url);
     return Stack(
       fit: StackFit.expand,
       alignment: Alignment.bottomCenter,
@@ -198,7 +202,19 @@ class StreamTileExpanded extends StatelessWidget {
           image: stImageProvider(stream.thumbnails?.maxresdefault ?? ''),
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
-              Image.network(stream.thumbnails!.hqdefault, fit: BoxFit.cover),
+              Image(image: stImageProvider(stream.thumbnails!.hqdefault), fit: BoxFit.cover),
+        ),
+        if (downloaded)
+        Align(
+          alignment: Alignment.topRight,
+          child: Container(
+            margin: const EdgeInsets.only(right: 6, top: 6),
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(100)),
+            child: const Icon(Icons.offline_pin_rounded, size: 16, color: Colors.white),
+          ),
         ),
         Align(
           alignment: Alignment.bottomRight,

@@ -94,6 +94,24 @@ class _AudioDownloadMenuState extends State<AudioDownloadMenu> with TickerProvid
     super.initState();
   }
 
+  // Resolve (and cache on the stream object) the size of the selected audio
+  Future<int?> getSelectedAudioSize() async {
+    if (selectedAudio.size == null) {
+      try {
+        await selectedAudio.getContentSize();
+      } catch (_) {}
+    }
+    return selectedAudio.size;
+  }
+
+  // Human readable size in KB or MB
+  String formatBytes(int bytes) {
+    if (bytes < 1024 * 1024) {
+      return '${(bytes / 1024).round()} KB';
+    }
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
+
   // Process all information and run this music by the downloader
   void onDownload() {
     final downloadInfo = DownloadInfo(
@@ -323,6 +341,22 @@ class _AudioDownloadMenuState extends State<AudioDownloadMenu> with TickerProvid
                               Languages.of(context)!.labelDownload,
                               style: subtitleTextStyle(context).copyWith(),
                               auto: true
+                            ),
+                            // Size of the file to download (updates with
+                            // the selected format/bitrate)
+                            FutureBuilder<int?>(
+                              key: ValueKey(selectedAudio.url),
+                              future: getSelectedAudioSize(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null) {
+                                  return const SizedBox();
+                                }
+                                return AnimatedText(
+                                  ' (${formatBytes(snapshot.data!)})',
+                                  style: subtitleTextStyle(context, opacity: 0.7),
+                                  auto: true
+                                );
+                              }
                             ),
                             const SizedBox(width: 4),
                             const AppAnimatedIcon(EvaIcons.downloadOutline,

@@ -110,7 +110,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
               padding: const EdgeInsets.only(left: 12),
               child: ListTile(
                 onTap: () {
-                  launchUrl(Uri.parse("https://paypal.me/artixo"), mode: LaunchMode.externalApplication);
+                  launchUrl(Uri.parse(mddPlayerPaypalUrl), mode: LaunchMode.externalApplication);
                 },
                 visualDensity: const VisualDensity(vertical: -3, horizontal: -3),
                 leading: const AppAnimatedIcon(
@@ -118,7 +118,29 @@ class _HomeLibraryState extends State<HomeLibrary> {
                   size: 20,
                 ),
                 title: Text(
-                  Languages.of(context)!.labelDonate,
+                  '${Languages.of(context)!.labelDonate} — PayPal',
+                  textAlign: TextAlign.start,
+                  style: smallTextStyle(context, bold: true)
+                ),
+                subtitle: Text(
+                  Languages.of(context)!.labelSupportDevelopment,
+                  style: smallTextStyle(context, opacity: 0.6).copyWith(fontSize: 12)
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: ListTile(
+                onTap: () {
+                  launchUrl(Uri.parse(mddPlayerCashappUrl), mode: LaunchMode.externalApplication);
+                },
+                visualDensity: const VisualDensity(vertical: -3, horizontal: -3),
+                leading: const AppAnimatedIcon(
+                  EvaIcons.creditCardOutline,
+                  size: 20,
+                ),
+                title: Text(
+                  '${Languages.of(context)!.labelDonate} — Cash App',
                   textAlign: TextAlign.start,
                   style: smallTextStyle(context, bold: true)
                 ),

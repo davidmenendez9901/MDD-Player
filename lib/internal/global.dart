@@ -43,6 +43,8 @@ Future<void> initGlobals() async {
 const String mddPlayerRepoUrl = 'https://github.com/davidmenendez9901/MDD-Player';
 const String mddPlayerTelegramUrl = 'https://t.me/mdd_player';
 const String mddPlayerWhatsappUrl = 'https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M';
+const String mddPlayerPaypalUrl = 'https://paypal.me/davidmenendez9901';
+const String mddPlayerCashappUrl = 'https://cash.app/\$davidmenendez9901';
 
 // App Custom Accent Color
 Color accentColor = const Color.fromARGB(255, 229, 12, 73);

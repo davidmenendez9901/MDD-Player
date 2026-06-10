@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDD Player — Música y video, incluso sin conexión</title>
+  <meta name="description" content="MDD Player: reproductor de música y video con descargas, modo offline y ahorro de datos. Gratis, sin anuncios y de código abierto (GPL v3).">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #e50c49;
+      --accent-soft: rgba(229, 12, 73, 0.12);
+      --bg: #12121a;
+      --bg-card: #1b1b26;
+      --text: #f2f2f7;
+      --text-dim: rgba(242, 242, 247, 0.62);
+      --border: rgba(255, 255, 255, 0.07);
+      --radius: 20px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(18, 18, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; max-width: 1080px; margin: 0 auto;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; }
+    .brand img { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 22px; font-size: 0.92rem; color: var(--text-dim); }
+    .nav-links a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      padding: 90px 0 70px;
+      background:
+        radial-gradient(ellipse 60% 50% at 75% 20%, rgba(229, 12, 73, 0.16), transparent),
+        radial-gradient(ellipse 45% 40% at 15% 85%, rgba(229, 12, 73, 0.08), transparent);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px; align-items: center;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.5px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p.lead { margin: 20px 0 32px; font-size: 1.08rem; color: var(--text-dim); max-width: 480px; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 14px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 13px 26px; border-radius: 14px;
+      font-weight: 600; font-size: 0.97rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 8px 28px rgba(229, 12, 73, 0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 34px rgba(229, 12, 73, 0.45); }
+    .btn-ghost { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: #232330; }
+    .btn svg { width: 19px; height: 19px; flex-shrink: 0; }
+    .hero-note { margin-top: 18px; font-size: 0.85rem; color: var(--text-dim); }
+
+    /* Phone mockup */
+    .phone-wrap { display: flex; justify-content: center; }
+    .phone {
+      width: 270px; border-radius: 38px;
+      background: #1d1d28;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(229, 12, 73, 0.12);
+      padding: 16px; transform: rotate(2.5deg);
+    }
+    .phone .screen { border-radius: 26px; overflow: hidden; background: #14141d; }
+    .scr-header { padding: 18px 18px 8px; }
+    .scr-header .bar { height: 11px; border-radius: 6px; background: rgba(255,255,255,0.1); width: 70%; }
+    .scr-header .bar.small { width: 40%; margin-top: 8px; height: 9px; }
+    .artwork {
+      margin: 16px 18px; aspect-ratio: 1; border-radius: 18px;
+      background: linear-gradient(135deg, #e50c49, #8e0a55 70%, #3b0d3f);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .artwork .play {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .artwork .play::after {
+      content: ''; margin-left: 4px;
+      border-left: 16px solid #e50c49;
+      border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+    }
+    .scr-song { padding: 2px 18px 6px; }
+    .scr-song .t { height: 11px; width: 60%; border-radius: 6px; background: rgba(255,255,255,0.25); }
+    .scr-song .a { height: 9px; width: 38%; border-radius: 6px; background: rgba(255,255,255,0.12); margin-top: 8px; }
+    .progress { margin: 14px 18px 6px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.1); position: relative; }
+    .progress::before { content: ''; position: absolute; inset: 0; width: 42%; border-radius: 4px; background: var(--accent); }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 26px; padding: 12px 0 24px; }
+    .controls .c { width: 14px; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.3); }
+    .controls .c.main { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); }
+    .offline-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin: 0 18px 18px; padding: 5px 12px;
+      border-radius: 100px; background: var(--accent-soft);
+      color: #ff7ba1; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px;
+    }
+    .offline-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #ff7ba1; }
+
+    /* Sections */
+    section { padding: 72px 0; }
+    .section-title { font-size: 1.9rem; font-weight: 700; text-align: center; }
+    .section-sub { text-align: center; color: var(--text-dim); margin: 10px auto 48px; max-width: 560px; }
+    .accent { color: var(--accent); }
+
+    /* Features */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px 24px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .card:hover { transform: translateY(-3px); border-color: rgba(229, 12, 73, 0.35); }
+    .card .icon {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: var(--accent-soft); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 1.3rem;
+    }
+    .card h3 { font-size: 1.02rem; font-weight: 600; margin-bottom: 6px; }
+    .card p { font-size: 0.88rem; color: var(--text-dim); }
+    .card.highlight { border-color: rgba(229, 12, 73, 0.4); background: linear-gradient(160deg, rgba(229,12,73,0.09), var(--bg-card) 55%); }
+    .tag {
+      display: inline-block; margin-left: 8px; padding: 2px 9px;
+      border-radius: 100px; background: var(--accent); color: #fff;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; vertical-align: middle;
+    }
+
+    /* Community */
+    .community { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .community-row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+
+    /* Open source */
+    .oss-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 36px;
+      max-width: 760px; margin: 0 auto; text-align: center;
+    }
+    .oss-box p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 14px; }
+    .oss-box a.inline { color: var(--accent); font-weight: 500; }
+    .oss-box a.inline:hover { text-decoration: underline; }
+
+    footer { padding: 36px 0 44px; text-align: center; color: var(--text-dim); font-size: 0.84rem; }
+    footer .links { display: flex; gap: 20px; justify-content: center; margin-bottom: 14px; font-size: 0.9rem; }
+    footer .links a:hover { color: var(--text); }
+
+    @media (max-width: 820px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero p.lead { margin-left: auto; margin-right: auto; }
+      .btn-row { justify-content: center; }
+      .phone { transform: rotate(0); margin-top: 12px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="brand"><img src="logo.png" alt="Logo de MDD Player">MDD Player</a>
+      <div class="nav-links">
+        <a href="#funciones">Funciones</a>
+        <a href="#comunidad">Comunidad</a>
+        <a href="#codigo-abierto">Código abierto</a>
+        <a href="https://github.com/davidmenendez9901/MDD-Player">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Tu música y videos,<br><span>incluso sin conexión</span></h1>
+        <p class="lead">
+          MDD Player es un reproductor de música y video para Android con descargas
+          de alta calidad, modo offline y ahorro de datos. Gratis, sin anuncios y para siempre.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="https://github.com/davidmenendez9901/MDD-Player/releases/latest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar APK
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/davidmenendez9901/MDD-Player">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.49 5.92.43.38.82 1.11.82 2.24v3.32c0 .32.21.7.82.58A12 12 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            Ver en GitHub
+          </a>
+        </div>
+        <p class="hero-note">Android 7.0+ · Gratis y de código abierto (GPL v3)</p>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone" aria-hidden="true">
+          <div class="screen">
+            <div class="scr-header"><div class="bar"></div><div class="bar small"></div></div>
+            <div class="artwork"><div class="play"></div></div>
+            <div class="scr-song"><div class="t"></div><div class="a"></div></div>
+            <div class="progress"></div>
+            <div class="controls"><div class="c"></div><div class="c main"></div><div class="c"></div></div>
+            <span class="offline-chip">MODO OFFLINE ACTIVO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="funciones">
+    <div class="container">
+      <h2 class="section-title">Todo lo que necesitas en <span class="accent">una sola app</span></h2>
+      <p class="section-sub">Reproductor completo, descargas en alta calidad y funciones pensadas para cuidar tus datos móviles.</p>
+      <div class="features-grid">
+        <div class="card highlight">
+          <div class="icon">📡</div>
+          <h3>Modo offline<span class="tag">NUEVO</span></h3>
+          <p>Navega tu biblioteca y reproduce tus descargas sin conexión, sin errores ni pantallas vacías.</p>
+        </div>
+        <div class="card highlight">
+          <div class="icon">💾</div>
+          <h3>Ahorro de datos<span class="tag">NUEVO</span></h3>
+          <p>Reproduce solo el audio de los videos para gastar menos datos móviles cuando no necesitas la imagen.</p>
+        </div>
+        <div class="card highlight">
+          <div class="icon">⬇️</div>
+          <h3>Descargas locales<span class="tag">NUEVO</span></h3>
+          <p>Lo que descargas queda integrado en tu reproductor de música, listo para escucharse donde sea.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎵</div>
+          <h3>Reproductor de música</h3>
+          <p>Reproductor completo con playlists, ecualizador, letras de carátula y reproducción en segundo plano.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎬</div>
+          <h3>Reproductor de video</h3>
+          <p>Mira videos en alta calidad con soporte Picture-in-Picture para seguir viendo mientras usas otras apps.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎚️</div>
+          <h3>Conversión de audio</h3>
+          <p>Descarga audio en AAC, OGG o MP3 con ajustes de volumen, graves y agudos antes de guardar.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🏷️</div>
+          <h3>Editor de etiquetas</h3>
+          <p>Edita títulos, artistas, álbumes y carátulas de tus canciones directamente desde la app.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>Temas y personalización</h3>
+          <p>Tema claro, oscuro o según el sistema, con color de acento y ajustes de interfaz a tu gusto.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🚫</div>
+          <h3>Sin anuncios, gratis</h3>
+          <p>Sin publicidad, sin suscripciones y sin rastreadores. Para siempre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="comunidad" class="community">
+    <div class="container">
+      <h2 class="section-title">Únete a la <span class="accent">comunidad</span></h2>
+      <p class="section-sub">Novedades, avisos de nuevas versiones y un lugar para reportar problemas o proponer ideas.</p>
+      <div class="community-row">
+        <a class="btn btn-ghost" href="https://t.me/mdd_player">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.94 0A12 12 0 1 0 24 12 12 12 0 0 0 11.94 0zm5.87 8.16-1.97 9.3c-.15.66-.54.82-1.1.51l-3-2.21-1.45 1.4c-.16.16-.3.3-.6.3l.21-3.05 5.56-5.02c.24-.21-.05-.33-.37-.12l-6.87 4.33-2.96-.93c-.64-.2-.66-.64.14-.95l11.57-4.46c.54-.2 1.01.12.84.9z"/></svg>
+          Canal de Telegram
+        </a>
+        <a class="btn btn-ghost" href="https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.11.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.13-.27-.2-.57-.35zM12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 1 1 8.38 4.63zM12.05 0a11.82 11.82 0 0 0-10.2 17.74L0 24l6.42-1.68A11.82 11.82 0 1 0 12.05 0z"/></svg>
+          Canal de WhatsApp
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/davidmenendez9901/MDD-Player/issues">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Reportar un problema
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="codigo-abierto">
+    <div class="container">
+      <div class="oss-box">
+        <h2 class="section-title" style="font-size:1.5rem; margin-bottom:18px;">Software libre y <span class="accent">código abierto</span></h2>
+        <p>
+          MDD Player es una versión modificada (fork) de
+          <a class="inline" href="https://github.com/SongTube/SongTube-App">SongTube</a>,
+          creada originalmente por <a class="inline" href="https://linktr.ee/artxdev">Artx</a> (Airis Team).
+          Esta versión, mantenida por David Menendez, añade modo offline, reproducción
+          de descargas locales y ahorro de datos. No es la app oficial de SongTube
+          ni está afiliada a sus autores originales.
+        </p>
+        <p>
+          Todo el código está disponible bajo la licencia
+          <a class="inline" href="https://github.com/davidmenendez9901/MDD-Player/blob/development/LICENSE">GNU GPL v3</a>:
+          eres libre de usarlo, estudiarlo, modificarlo y compartirlo bajo los mismos términos.
+        </p>
+        <a class="btn btn-primary" style="margin-top:10px;" href="https://github.com/davidmenendez9901/MDD-Player">Explorar el código fuente</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="links">
+      <a href="https://github.com/davidmenendez9901/MDD-Player/releases/latest">Descargas</a>
+      <a href="https://t.me/mdd_player">Telegram</a>
+      <a href="https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M">WhatsApp</a>
+      <a href="https://github.com/davidmenendez9901/MDD-Player">GitHub</a>
+    </div>
+    <p>MDD Player · Modificado por David Menendez · Licencia GPL v3<br>
+    Fork de <a href="https://github.com/SongTube/SongTube-App" style="text-decoration:underline;">SongTube</a>, creado por Artx (Airis Team)</p>
+  </footer>
+
+</body>
+</html>

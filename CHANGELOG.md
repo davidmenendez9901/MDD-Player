@@ -1,6 +1,7 @@
-# MDD Player 7.4.0:
+# MDD Player 1.0.0:
 
 Primera versión de MDD Player, fork de SongTube por David Menendez.
+(Basada en SongTube 7.3.2; el versionado de este fork empieza desde 1.0.0)
 
 - General:
     * Nuevo nombre, ícono e identidad: MDD Player (dev.davidmenendez.mddplayer),

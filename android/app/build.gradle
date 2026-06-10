@@ -57,6 +57,20 @@ android {
         multiDexEnabled true
     }
 
+    // Excluir del APK las libs nativas de ABIs que no se pidieron via
+    // --target-platform (p. ej. ffmpeg x86_64 en el APK universal, que se
+    // publica solo para moviles reales; los emuladores tienen su APK propio).
+    // En builds --split-per-abi target-platform incluye android-x64, asi que
+    // alli no se excluye nada.
+    def requestedPlatforms = project.hasProperty('target-platform') ? project.property('target-platform') : ''
+    if (requestedPlatforms && !requestedPlatforms.contains('android-x64') && !requestedPlatforms.contains('android-x86')) {
+        packagingOptions {
+            jniLibs {
+                excludes += ['lib/x86/**', 'lib/x86_64/**']
+            }
+        }
+    }
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -71,13 +85,6 @@ android {
             signingConfig signingConfigs.release
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // El APK universal se publica solo para moviles reales (arm/arm64);
-            // x86_64 (emuladores) tiene su propio APK separado
-            if (System.getenv('UNIVERSAL_NO_X86') == '1') {
-                ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a'
-                }
-            }
         }
         debug {
             applicationIdSuffix ".dev"

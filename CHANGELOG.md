@@ -1,3 +1,17 @@
+# MDD Player 7.4.0:
+
+Primera versión de MDD Player, fork de SongTube por David Menendez.
+
+- General:
+    * Nuevo nombre, ícono e identidad: MDD Player (dev.davidmenendez.mddplayer),
+      instalable junto a la app original
+    * Modo offline: navega tu biblioteca y reproduce descargas sin conexión
+    * Reproducción de descargas locales integrada en el reproductor de música
+    * Modo de ahorro de datos: reproduce solo el audio de los videos
+    * Insignia de "descargado" en los videos que ya tienes en el dispositivo
+    * Actualizador interno apuntando a los releases de MDD Player
+    * Nuevos canales de comunidad (Telegram y WhatsApp) y landing page
+
 # SongTube 7.2.0:
 
 - General:

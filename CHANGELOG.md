@@ -1,3 +1,12 @@
+# MDD Player 1.0.1:
+
+- General:
+    * Nuevos enlaces de donación (PayPal y Cash App) en la biblioteca
+    * APK universal mucho más ligero (~103 MB, antes ~150 MB): ya no incluye
+      las librerías de emulador (x86_64), que tienen su APK propio
+    * Sección de donaciones en la página oficial y el README
+    * Optimización de assets internos
+
 # MDD Player 1.0.0:
 
 Primera versión de MDD Player, fork de SongTube por David Menendez.

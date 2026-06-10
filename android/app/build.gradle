@@ -71,9 +71,13 @@ android {
             signingConfig signingConfigs.release
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //ndk {
-            //    abiFilters 'armeabi-v7a', 'arm64-v8a'
-            //}
+            // El APK universal se publica solo para moviles reales (arm/arm64);
+            // x86_64 (emuladores) tiene su propio APK separado
+            if (System.getenv('UNIVERSAL_NO_X86') == '1') {
+                ndk {
+                    abiFilters 'armeabi-v7a', 'arm64-v8a'
+                }
+            }
         }
         debug {
             applicationIdSuffix ".dev"

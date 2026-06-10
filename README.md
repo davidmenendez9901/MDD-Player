@@ -80,6 +80,13 @@ La app soporta más de 25 idiomas. Para añadir uno nuevo:
 2. Registra el idioma en [`lib/languages/languages.dart`](lib/languages/languages.dart): añade un `LanguageData(bandera, nombre, código)` a `_supportedLanguages` y un caso nuevo en `_loadLocale()`.
 3. Abre un Pull Request.
 
+## ❤️ Donaciones
+
+MDD Player es gratis y sin anuncios, para siempre. Si quieres apoyar el desarrollo:
+
+- PayPal: https://paypal.me/davidmenendez9901
+- Cash App: https://cash.app/$davidmenendez9901
+
 ## 🐛 Reportar problemas
 
 Abre un [issue](https://github.com/davidmenendez9901/MDD-Player/issues) describiendo el problema, tu versión de Android y los pasos para reproducirlo.

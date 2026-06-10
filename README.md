@@ -1,117 +1,94 @@
-![](https://imgur.com/vcsnxWV.jpg)
+<p align="center">
+  <img src="docs/logo.png" width="140" alt="Logo de MDD Player">
+</p>
 
-# MDD Player
+<h1 align="center">MDD Player</h1>
 
-> **This is a modified version (fork) of [SongTube](https://github.com/SongTube/SongTube-App), originally created by [Artx](https://linktr.ee/artxdev) (Airis Team). This fork is NOT the official SongTube app and is not affiliated with or endorsed by the original authors.**
->
-> **Modified by David Menendez, 2026.** Main changes in this fork:
->
-> + Offline mode (browse and play without a connection)
-> + Playback of local downloads from the music player
-> + Audio-only data saving mode
-> + App renamed to **MDD Player** with a new application ID (`dev.davidmenendez.mddplayer`) so it can be installed alongside the original app
->
-> Like the original, this fork is licensed under the [GNU GPL v3](LICENSE). The full source code of this modified version is available in this repository, and APK releases are published in the [Releases](https://github.com/davidmenendez9901/MDD-Player/releases) section.
+<p align="center">
+  Reproductor de música y video para Android con descargas de alta calidad,<br>
+  <b>modo offline</b> y <b>ahorro de datos</b>. Gratis, sin anuncios y de código abierto.
+</p>
+
+<p align="center">
+  <a href="https://davidmenendez9901.github.io/MDD-Player/"><b>🌐 Página oficial</b></a> ·
+  <a href="https://github.com/davidmenendez9901/MDD-Player/releases/latest"><b>⬇️ Descargar APK</b></a> ·
+  <a href="https://t.me/mdd_player"><b>Telegram</b></a> ·
+  <a href="https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M"><b>WhatsApp</b></a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licencia-GPL%20v3-blue" alt="Licencia GPL v3"></a>
+  <img src="https://img.shields.io/badge/plataforma-Android-green" alt="Plataforma Android">
+  <a href="https://github.com/davidmenendez9901/MDD-Player/releases"><img src="https://img.shields.io/github/v/release/davidmenendez9901/MDD-Player?include_prereleases&label=release" alt="Última release"></a>
+</p>
 
 ---
 
-SongTube is a new beautiful and fast application made in Flutter, it supports an almost full original experience, with many features music oriented features, including a full music player.
+> [!NOTE]
+> **MDD Player es una versión modificada (fork) de [SongTube](https://github.com/SongTube/SongTube-App)**, creada originalmente por [Artx](https://linktr.ee/artxdev) (Airis Team). Esta versión **no es la app oficial de SongTube** ni está afiliada a sus autores originales.
+>
+> Modificada por **David Menendez**, 2026. Al igual que el original, se distribuye bajo la licencia [GNU GPL v3](LICENSE): todo el código fuente de esta versión está en este repositorio.
 
+## ✨ Novedades de este fork
 
-## App Features
+- **Modo offline** — navega tu biblioteca y reproduce tu contenido sin conexión, sin errores ni pantallas vacías
+- **Descargas locales en el reproductor** — lo que descargas queda integrado en el reproductor de música
+- **Ahorro de datos** — reproduce solo el audio de los videos para gastar menos datos móviles
+- **Insignia de descargado** — identifica de un vistazo qué contenido ya tienes en el dispositivo
+- Nuevo nombre, ícono e identidad (`dev.davidmenendez.mddplayer`), instalable junto a la app original
 
-+ Fully featured music player
-+ Fully featured video player
-+ Audio tags & artwork editor
-+ Video & Audio download up to full quality
-+ Audio download features (Volume, Bass & Treble gain)
-+ Audio download conversion (AAC, OGG and MP3)
-+ View, create or save playlists
-+ Subscribe to any channel
-+ Picture-in-Picture support
-+ Background Playback (Implementation is in Alpha stage)
-+ Save videos to favorites
-+ Watch history (Can be paused in settings)
-+ Video search filters
-+ Open any video from an external app via share
-+ Custom download path for audio & video separately
-+ Music equalizer
-+ Music playlists
-+ System, Light & Dark Themes
-+ UI Customizations
-+ Backup & restore local data
+## 📱 Funciones
 
+- Reproductor de música completo (playlists, ecualizador, reproducción en segundo plano)
+- Reproductor de video con soporte Picture-in-Picture
+- Descarga de video y audio hasta la máxima calidad
+- Conversión de audio (AAC, OGG y MP3) con ajustes de volumen, graves y agudos
+- Editor de etiquetas y carátulas
+- Suscripciones a canales, favoritos e historial
+- Abre videos compartidos desde otras apps
+- Rutas de descarga personalizadas para audio y video
+- Temas claro, oscuro y según el sistema, con personalización de interfaz
+- Copia de seguridad y restauración de datos locales
 
-## Download MDD Player
+## ⬇️ Descarga
 
-You can get the APK from this repository's [Releases](https://github.com/davidmenendez9901/MDD-Player/releases) section.
+El APK está disponible en la sección de [**Releases**](https://github.com/davidmenendez9901/MDD-Player/releases/latest).
 
-Community channels:
+Canales de la comunidad para novedades y soporte:
 
-+ Telegram: https://t.me/mdd_player
-+ WhatsApp: https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M
+- Telegram: https://t.me/mdd_player
+- WhatsApp: https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M
 
-If you are looking for the original SongTube app, visit the [official SongTube repository](https://github.com/SongTube/SongTube-App).
+## 🛠️ Compilar desde el código fuente
 
+Requisitos: [Flutter](https://flutter.dev) (canal estable) y el SDK de Android.
 
-## SongTube Link
-
-This is a Chromium extension for your desktop browser that allows you to send videos to Songtube, to watch or instantly start downloading as Music (Format is determined by the app settings instant download format). This extension requires a desktop app to automatically detect your device or you can manually input your device IP Address to connect.
-
-For more information, downloads and how to use, please refer to [SongTube Link](https://github.com/SongTube/songtube_link_extension) repo.
-
-## Contribute
-
-You can contribute on anything you want from new features fixes, etc... But, if the app doesn't support
-your native language, you can contribute by implementing it! It's really easy:
-
-**1st Step:** Create a new language file by creating it under this project's **languages/translations** folder, the file needs to be named: "language**Code**.dart" (**Code** is the LanguageCode of the Language you are implementing, for example: **En** or **Es**), you can then copy the contents of any other already supported Language and adapt/translate it to your new one (Remember to change the class name to "Language**Code**").
-
-**2nd Step:** To finish your implementation, open this file: [languages.dart](https://github.com/SongTube/SongTube-App/blob/master/lib/languages/languages.dart)
-
-Inside that file you will find at the first code lines:
-
-```dart
-final _supportedLanguages = <LanguageData>[
-  // English (US)
-  LanguageData("🇺🇸", "English", 'en'),
-  // Spanish (VE)
-  LanguageData("ve", "Español", "es"),
-];
-Future<Languages> _loadLocale(Locale locale) async {
-  switch (locale.languageCode) {
-    // English (US)
-    case 'en':
-      return LanguageEn();
-    // Spanish (VE)
-    case 'es':
-      return LanguageEs();
-    // Default Language (English)
-    default:
-      return LanguageEn();
-  }
-}
+```bash
+git clone https://github.com/davidmenendez9901/MDD-Player.git
+cd MDD-Player
+flutter pub get
+flutter build apk --release
 ```
 
-Where for your new Language you have to add a new LanguageData(flag, name, languageCode) into the **_supportedLanguages** list, then, a new switch case in **_loadLocale()** function with your languageCode and return your new language File, open a Pull Request and after checking I will merge it!.
+El APK queda en `build/app/outputs/flutter-apk/`.
 
-*If you don't feel like doing this last step, you can still send me your new Language File via PullRequest and I will do it.*
+## 🌍 Traducciones
 
-**Current list of Languages Supported:**
+La app soporta más de 25 idiomas. Para añadir uno nuevo:
 
-- English
-- Español
-- Português (Thanks to [@RickyM7](https://github.com/RickyM7))
-- Igbo (Thanks to [@enweazudaniel](https://github.com/enweazudaniel))
-- Indonesian (Thanks to [@breakdowns](https://github.com/breakdowns))
-- Turkish (Thanks to Barış Kırmızı)
-- Russian (Thanks yxur_bruh)
-- Arabic (Thanks JOOD_TECH)
-- Somali (Thanks [@nadiration](https://github.com/nadiration))
-- German (Thanks [@Paduu29](https://github.com/Paduu29))
-- Bengali (Thanks [@pieas-asif](https://github.com/pieas-asif))
-- Ukrainian (Thanks [@redman-dev29](https://github.com/redman-dev29))
-- Japanese (Thanks to [@HiSubway](https://github.com/HiSubway))
-- Italian (Thanks to [@alpha4041](https://github.com/alpha4041))
+1. Crea un archivo `language<Código>.dart` en [`lib/languages/translations/`](lib/languages/translations/), copiando cualquier idioma existente y traduciendo sus textos (cambia también el nombre de la clase a `Language<Código>`).
+2. Registra el idioma en [`lib/languages/languages.dart`](lib/languages/languages.dart): añade un `LanguageData(bandera, nombre, código)` a `_supportedLanguages` y un caso nuevo en `_loadLocale()`.
+3. Abre un Pull Request.
 
----
+## 🐛 Reportar problemas
+
+Abre un [issue](https://github.com/davidmenendez9901/MDD-Player/issues) describiendo el problema, tu versión de Android y los pasos para reproducirlo.
+
+## 📜 Licencia y créditos
+
+Este proyecto se distribuye bajo la licencia [**GNU GPL v3**](LICENSE).
+
+- Proyecto original: [SongTube](https://github.com/SongTube/SongTube-App), de [Artx](https://linktr.ee/artxdev) (Airis Team)
+- Modificaciones de este fork: David Menendez, 2026
+
+Eres libre de usar, estudiar, modificar y redistribuir este software bajo los términos de la misma licencia.

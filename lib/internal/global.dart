@@ -46,8 +46,9 @@ const String mddPlayerWhatsappUrl = 'https://whatsapp.com/channel/0029Vap9Qt24NV
 const String mddPlayerPaypalUrl = 'https://paypal.me/davidmenendez9901';
 const String mddPlayerCashappUrl = 'https://cash.app/\$davidmenendez9901';
 
-// App Custom Accent Color
-Color accentColor = const Color.fromARGB(255, 229, 12, 73);
+// App Custom Accent Color (azul del ícono de MDD Player: punto medio del
+// degradado cian #3bd4e1 -> azul #224fa6)
+Color accentColor = const Color.fromARGB(255, 46, 145, 196);
 
 // Platform Details
 late AndroidDeviceInfo deviceInfo;

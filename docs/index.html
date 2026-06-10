@@ -11,8 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent: #e50c49;
-      --accent-soft: rgba(229, 12, 73, 0.12);
+      --accent: #2e91c4;
+      --accent-soft: rgba(46, 145, 196, 0.12);
+      --gold: #c5a050;
       --bg: #12121a;
       --bg-card: #1b1b26;
       --text: #f2f2f7;
@@ -53,8 +54,8 @@
       position: relative;
       padding: 90px 0 70px;
       background:
-        radial-gradient(ellipse 60% 50% at 75% 20%, rgba(229, 12, 73, 0.16), transparent),
-        radial-gradient(ellipse 45% 40% at 15% 85%, rgba(229, 12, 73, 0.08), transparent);
+        radial-gradient(ellipse 60% 50% at 75% 20%, rgba(59, 212, 225, 0.14), transparent),
+        radial-gradient(ellipse 45% 40% at 15% 85%, rgba(34, 79, 166, 0.16), transparent);
     }
     .hero-grid {
       display: grid; grid-template-columns: 1.2fr 0.8fr;
@@ -76,9 +77,9 @@
     .btn:hover { transform: translateY(-2px); }
     .btn-primary {
       background: var(--accent); color: #fff;
-      box-shadow: 0 8px 28px rgba(229, 12, 73, 0.35);
+      box-shadow: 0 8px 28px rgba(46, 145, 196, 0.35);
     }
-    .btn-primary:hover { box-shadow: 0 12px 34px rgba(229, 12, 73, 0.45); }
+    .btn-primary:hover { box-shadow: 0 12px 34px rgba(46, 145, 196, 0.45); }
     .btn-ghost { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
     .btn-ghost:hover { background: #232330; }
     .btn svg { width: 19px; height: 19px; flex-shrink: 0; }
@@ -90,7 +91,7 @@
       width: 270px; border-radius: 38px;
       background: #1d1d28;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(229, 12, 73, 0.12);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(59, 212, 225, 0.12);
       padding: 16px; transform: rotate(2.5deg);
     }
     .phone .screen { border-radius: 26px; overflow: hidden; background: #14141d; }
@@ -99,7 +100,7 @@
     .scr-header .bar.small { width: 40%; margin-top: 8px; height: 9px; }
     .artwork {
       margin: 16px 18px; aspect-ratio: 1; border-radius: 18px;
-      background: linear-gradient(135deg, #e50c49, #8e0a55 70%, #3b0d3f);
+      background: linear-gradient(135deg, #3bd4e1, #224fa6 70%, #14306b);
       display: flex; align-items: center; justify-content: center;
     }
     .artwork .play {
@@ -109,7 +110,7 @@
     }
     .artwork .play::after {
       content: ''; margin-left: 4px;
-      border-left: 16px solid #e50c49;
+      border-left: 16px solid #224fa6;
       border-top: 10px solid transparent; border-bottom: 10px solid transparent;
     }
     .scr-song { padding: 2px 18px 6px; }
@@ -124,9 +125,9 @@
       display: inline-flex; align-items: center; gap: 6px;
       margin: 0 18px 18px; padding: 5px 12px;
       border-radius: 100px; background: var(--accent-soft);
-      color: #ff7ba1; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px;
+      color: #7fd8ec; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px;
     }
-    .offline-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #ff7ba1; }
+    .offline-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #7fd8ec; }
 
     /* Sections */
     section { padding: 72px 0; }
@@ -144,7 +145,7 @@
       border-radius: var(--radius); padding: 26px 24px;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    .card:hover { transform: translateY(-3px); border-color: rgba(229, 12, 73, 0.35); }
+    .card:hover { transform: translateY(-3px); border-color: rgba(46, 145, 196, 0.35); }
     .card .icon {
       width: 44px; height: 44px; border-radius: 13px;
       background: var(--accent-soft); color: var(--accent);
@@ -153,10 +154,10 @@
     }
     .card h3 { font-size: 1.02rem; font-weight: 600; margin-bottom: 6px; }
     .card p { font-size: 0.88rem; color: var(--text-dim); }
-    .card.highlight { border-color: rgba(229, 12, 73, 0.4); background: linear-gradient(160deg, rgba(229,12,73,0.09), var(--bg-card) 55%); }
+    .card.highlight { border-color: rgba(46, 145, 196, 0.4); background: linear-gradient(160deg, rgba(46,145,196,0.09), var(--bg-card) 55%); }
     .tag {
       display: inline-block; margin-left: 8px; padding: 2px 9px;
-      border-radius: 100px; background: var(--accent); color: #fff;
+      border-radius: 100px; background: var(--gold); color: #1b1b26;
       font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; vertical-align: middle;
     }
 

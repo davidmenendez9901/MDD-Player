@@ -27,8 +27,8 @@ Future<void> initGlobals() async {
   audioHandler = await AudioService.init(
       builder: () => StAudioHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.artxdev.songtube',
-        androidNotificationChannelName: 'SongTube',
+        androidNotificationChannelId: 'dev.davidmenendez.mddplayer',
+        androidNotificationChannelName: 'MDD Player',
       ));
   isPictureInPictureSupported =
       await FlutterPip.isPictureInPictureSupported() ?? false;
@@ -38,6 +38,11 @@ Future<void> initGlobals() async {
     AppUpdateManger.inAppUpdater();
   }
 }
+
+// MDD Player project links (fork by David Menendez)
+const String mddPlayerRepoUrl = 'https://github.com/davidmenendez9901/MDD-Player';
+const String mddPlayerTelegramUrl = 'https://t.me/mdd_player';
+const String mddPlayerWhatsappUrl = 'https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M';
 
 // App Custom Accent Color
 Color accentColor = const Color.fromARGB(255, 229, 12, 73);

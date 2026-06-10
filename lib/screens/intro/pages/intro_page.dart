@@ -96,7 +96,7 @@ class _IntroPageState extends State<IntroPage> {
                     style: textStyle(context).copyWith(color: Colors.white.withOpacity(0.8))
                   ),
                   TextSpan(
-                    text: "SongTube",
+                    text: "MDD Player",
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 36,

@@ -205,7 +205,7 @@ class LanguageTr extends Languages {
   @override
   String get labelDeleteCache => "Önbelleği temizle";
   @override
-  String get labelDeleteCacheJustification => "SongTube önbelleğini temizle";
+  String get labelDeleteCacheJustification => "MDD Player önbelleğini temizle";
   @override
   String get labelAndroid11Fix => "Android 11 ek düzeltmesi";
   @override
@@ -298,7 +298,7 @@ class LanguageTr extends Languages {
   String get labelJoinTelegramChannel => "Telegram kanalına katıl!";
   @override
   String get labelJoinTelegramJustification =>
-    "SongTube'u sevdiniz mi? Telegram Kanalımıza katılabilirsiniz! " +
+    "MDD Player'u sevdiniz mi? Telegram Kanalımıza katılabilirsiniz! " +
     "Güncellemeler, bilgi, geliştirme, grup bağlantısı veya diğer sosyal medya bağlantılarını bulabilirsiniz." +
     "\n\n" +
     "Aklınıza takılan bir sorun veya harika bir öneriniz varsa lütfen kanaldaki grup bağlantısını " +
@@ -405,9 +405,9 @@ class LanguageTr extends Languages {
   @override
   String get labelBackupAndRestoreDescription => 'Cihazda ki verilerinizi yedekleyin ya da geri yükleyin';
   @override
-  String get labelSongtubeLink => "SongTube'un Linki";
+  String get labelSongtubeLink => "MDD Player'un Linki";
   @override
-  String get labelSongtubeLinkDescription => 'SongTube tarayıcı eklentisinin bu cihazı görmesine izin verin, basılı tutarak ne olduğunu öğrenebilirsiniz';
+  String get labelSongtubeLinkDescription => 'MDD Player tarayıcı eklentisinin bu cihazı görmesine izin verin, basılı tutarak ne olduğunu öğrenebilirsiniz';
   @override
   String get labelSupportDevelopment => 'Uygulamayı Destekle';
   @override
@@ -441,7 +441,7 @@ class LanguageTr extends Languages {
   @override
   String get labelEnjoyTheApp => 'Uygulamanın\nKeyfine Bakın';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube güzel bir görünümle ve fiyakalı özelliklerle donatılmıştır, müziğinizin keyfini çıkarın!';
+  String get labelSongtubeIsBackDescription => 'MDD Player güzel bir görünümle ve fiyakalı özelliklerle donatılmıştır, müziğinizin keyfini çıkarın!';
   @override
   String get labelLetsGo => 'Hadi\ başlayalım';
   @override
@@ -545,7 +545,7 @@ class LanguageTr extends Languages {
   @override
   String get labelPermissionRequired => 'İzin Gerekli';
   @override
-  String get labelPermissionRequiredDescription => "SongTube'un cihazınızda ki tüm şarkılara erişebilmesi ve düzenleyebilmesi için 'Tüm dosyalara erişim' izni gereklidir";
+  String get labelPermissionRequiredDescription => "MDD Player'un cihazınızda ki tüm şarkılara erişebilmesi ve düzenleyebilmesi için 'Tüm dosyalara erişim' izni gereklidir";
   @override
   String get labelApplying => 'Uygulanıyor';
   @override

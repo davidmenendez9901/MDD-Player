@@ -61,7 +61,7 @@ class AboutPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 32),
                     Text(
-                      "SongTube",
+                      "MDD Player",
                       style: bigTextStyle(context)
                     ),
                   ],
@@ -85,6 +85,34 @@ class AboutPage extends StatelessWidget {
                             fontWeight: FontWeight.w700
                           )
                         )
+                      ]
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                // Modified version notice (GPLv3 section 5a)
+                Padding(
+                  padding: const EdgeInsets.only(left: 32, right: 32),
+                  child: RichText(
+                    text: TextSpan(
+                      style: subtitleTextStyle(context),
+                      children: const [
+                        TextSpan(
+                          text: "MDD Player is a modified version of ",
+                        ),
+                        TextSpan(
+                          text: "SongTube",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700
+                          )
+                        ),
+                        TextSpan(
+                          text: ", originally created by Artx (Airis Team).\n\n"
+                            "Modified by David Menendez, 2026. This fork adds "
+                            "offline mode, local downloads playback and data "
+                            "saving features. Source code is available under "
+                            "the GNU GPL v3 license.",
+                        ),
                       ]
                     ),
                   ),
@@ -124,7 +152,31 @@ class AboutPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Divider(),
-                // Developers Information
+                // Fork source code & modification author
+                ListTile(
+                  contentPadding: const EdgeInsets.only(left: 32, right: 32),
+                  onTap: () {
+                    launchUrl(Uri.parse('https://github.com/davidmenendez9901/MDD-Player'));
+                  },
+                  leading: Image.asset(
+                    'assets/images/logo.png',
+                    width: MediaQuery.of(context).size.width*0.09,
+                  ),
+                  title: Text(
+                    "MDD Player Source Code (David Menendez)",
+                    textAlign: TextAlign.start,
+                    style: subtitleTextStyle(context, bold: true)
+                  ),
+                  subtitle: Text(
+                    "https://github.com/davidmenendez9901/MDD-Player",
+                    style: smallTextStyle(context, opacity: 0.8)
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.arrow_forward_ios_rounded, color: Theme.of(context).iconTheme.color, size: 18),
+                  ),
+                ),
+                // Original Developers Information
                 ListTile(
                   contentPadding: const EdgeInsets.only(left: 32, right: 32),
                   onTap: () {
@@ -135,7 +187,7 @@ class AboutPage extends StatelessWidget {
                     width: MediaQuery.of(context).size.width*0.09,
                   ),
                   title: Text(
-                    "Developer Info",
+                    "Original Developer Info (Artx)",
                     textAlign: TextAlign.start,
                     style: subtitleTextStyle(context, bold: true)
                   ),

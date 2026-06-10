@@ -77,7 +77,7 @@ class SongOptionsSheet extends StatelessWidget {
                   FlutterShare.shareFile(
                     title: song.title,
                     text: '${song.title} - ${song.artist}\n\n'
-                          'Shared from SongTube\nsongtube.github.io',
+                          'Shared from MDD Player\ngithub.com/davidmenendez9901/MDD-Player',
                     fileType: 'audio/*',
                     filePath: song.id
                   );

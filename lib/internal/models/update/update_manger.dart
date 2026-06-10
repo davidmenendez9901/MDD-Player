@@ -89,7 +89,9 @@ class AppUpdateManger {
     var headers = {
       "Accept": "application/vnd.github.v3+json",
     };
-    const songTube = "https://api.github.com/repos/SongTube/SongTube/releases";
+    // MDD Player fork: updates come from this fork's releases, not the
+    // original SongTube repository
+    const songTube = "https://api.github.com/repos/davidmenendez9901/MDD-Player/releases";
     var repoUrl = Uri.parse(songTube);
     try {
       var response = await client.get(repoUrl, headers: headers);
@@ -136,10 +138,10 @@ class AppUpdateManger {
     return fileName;
   }
 
-  /// Create a folder (SongTube) at download
+  /// Create a folder (MDD Player) at download
   static Future<String> _createDir() async {
     final path =
-        Directory("${await AndroidPathProvider.downloadsPath}/SongTube");
+        Directory("${await AndroidPathProvider.downloadsPath}/MDD Player");
     if (!(await path.exists())) {
       await path.create();
     }

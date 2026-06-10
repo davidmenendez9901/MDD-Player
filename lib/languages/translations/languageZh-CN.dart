@@ -201,7 +201,7 @@ class LanguageZhCN extends Languages {
   @override
   String get labelDeleteCache => "清除缓存";
   @override
-  String get labelDeleteCacheJustification => "清除 SongTube 缓存";
+  String get labelDeleteCacheJustification => "清除 MDD Player 缓存";
   @override
   String get labelAndroid11Fix => "Android 11 修复";
   @override
@@ -293,7 +293,7 @@ class LanguageZhCN extends Languages {
   String get labelJoinTelegramChannel => "加入 Telegram 频道！";
   @override
   String get labelJoinTelegramJustification =>
-    "你喜欢 SongTube吗？ 欢迎加入我们的 Telegram 频道！ 你可以在这里找到 " +
+    "你喜欢 MDD Player吗？ 欢迎加入我们的 Telegram 频道！ 你可以在这里找到 " +
     "关于 更新，信息，开发，群组链接 以及其他资讯！" +
     "\n\n" +
     "如果你有任何问题，意见或建议 " +
@@ -400,9 +400,9 @@ class LanguageZhCN extends Languages {
   @override
   String get labelBackupAndRestoreDescription => '保存或恢复你的本地数据';
   @override
-  String get labelSongtubeLink => 'SongTube 链接';
+  String get labelSongtubeLink => 'MDD Player 链接';
   @override
-  String get labelSongtubeLinkDescription => '允许SongTube浏览器扩展检测此设备，长按了解更多信息';
+  String get labelSongtubeLinkDescription => '允许MDD Player浏览器扩展检测此设备，长按了解更多信息';
   @override
   String get labelSupportDevelopment => '开发与支持';
   @override
@@ -436,7 +436,7 @@ class LanguageZhCN extends Languages {
   @override
   String get labelEnjoyTheApp => '使用愉快';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube 已回归！更干净的外观和一系列功能，尽情享受音乐吧！';
+  String get labelSongtubeIsBackDescription => 'MDD Player 已回归！更干净的外观和一系列功能，尽情享受音乐吧！';
   @override
   String get labelLetsGo => '开始吧';
   @override
@@ -540,7 +540,7 @@ class LanguageZhCN extends Languages {
   @override
   String get labelPermissionRequired => '需要权限';
   @override
-  String get labelPermissionRequiredDescription => 'SongTube 编辑设备上的任何歌曲都需要所有文件访问权限';
+  String get labelPermissionRequiredDescription => 'MDD Player 编辑设备上的任何歌曲都需要所有文件访问权限';
   @override
   String get labelApplying => '应用中';
   @override

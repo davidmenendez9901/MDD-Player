@@ -204,7 +204,7 @@ class LanguageJa extends Languages {
   @override
   String get labelDeleteCache => "キャッシュを消去";
   @override
-  String get labelDeleteCacheJustification => "SongTubeのキャッシュを消去";
+  String get labelDeleteCacheJustification => "MDD Playerのキャッシュを消去";
   @override
   String get labelAndroid11Fix => "Android 11 向けの修正";
   @override
@@ -297,7 +297,7 @@ class LanguageJa extends Languages {
   String get labelJoinTelegramChannel => "Telegramチャンネルに参加する";
   @override
   String get labelJoinTelegramJustification =>
-    "SongTubeが気に入ったら, Telegram Channelにご参加ください。このチャンネルでは " +
+    "MDD Playerが気に入ったら, Telegram Channelにご参加ください。このチャンネルでは " +
     "アップデート, 情報, 開発, グループリンク, その他のソーシャルリンクを見ることができます。" +
     "\n\n" +
     "アプリに問題が発生した場合や提案がある場合は, " +
@@ -404,9 +404,9 @@ class LanguageJa extends Languages {
   @override
   String get labelBackupAndRestoreDescription => '端末内データのすべてを保存または復元';
   @override
-  String get labelSongtubeLink => 'SongTube リンク';
+  String get labelSongtubeLink => 'MDD Player リンク';
   @override
-  String get labelSongtubeLinkDescription => 'SongTube ブラウザ拡張機能がこの端末を検出できるようにします。長押しで詳細';
+  String get labelSongtubeLinkDescription => 'MDD Player ブラウザ拡張機能がこの端末を検出できるようにします。長押しで詳細';
   @override
   String get labelSupportDevelopment => '開発支援';
   @override
@@ -440,7 +440,7 @@ class LanguageJa extends Languages {
   @override
   String get labelEnjoyTheApp => 'Enjoy the\nApp';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube is back with a cleaner look and set of features, have fun with your music!';
+  String get labelSongtubeIsBackDescription => 'MDD Player is back with a cleaner look and set of features, have fun with your music!';
   @override
   String get labelLetsGo => 'Let\'s go';
   @override
@@ -544,7 +544,7 @@ class LanguageJa extends Languages {
   @override
   String get labelPermissionRequired => '許可が必要';
   @override
-  String get labelPermissionRequiredDescription => 'この端末上でSongTubeが曲を編集するにはすべてのファイルにアクセスする許可が必要です';
+  String get labelPermissionRequiredDescription => 'この端末上でMDD Playerが曲を編集するにはすべてのファイルにアクセスする許可が必要です';
   @override
   String get labelApplying => '適用中';
   @override

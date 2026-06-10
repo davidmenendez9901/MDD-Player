@@ -205,7 +205,7 @@ class LanguageId extends Languages {
   @override
   String get labelDeleteCache => "Hapus Cache";
   @override
-  String get labelDeleteCacheJustification => "Hapus Cache SongTube";
+  String get labelDeleteCacheJustification => "Hapus Cache MDD Player";
   @override
   String get labelAndroid11Fix => "Perbaikan Android 11";
   @override
@@ -298,7 +298,7 @@ class LanguageId extends Languages {
   String get labelJoinTelegramChannel => "Gabung Saluran Telegram!";
   @override
   String get labelJoinTelegramJustification =>
-    "Apakah anda suka SongTube? Silakan bergabung dengan Saluran Telegram! Anda akan menemukan " +
+    "Apakah anda suka MDD Player? Silakan bergabung dengan Saluran Telegram! Anda akan menemukan " +
     "Pembaruan, Informasi, Pengembangan, Tautan Grup, dan tautan Sosial lainnya." +
     "\n\n" +
     "Jika anda memiliki masalah atau rekomendasi yang bagus dalam pikiran anda, " +
@@ -407,7 +407,7 @@ class LanguageId extends Languages {
   @override
   String get labelSongtubeLink => 'SongTube Link';
   @override
-  String get labelSongtubeLinkDescription => 'Allow SongTube browser extension to detect this device, long press to learn more';
+  String get labelSongtubeLinkDescription => 'Allow MDD Player browser extension to detect this device, long press to learn more';
   @override
   String get labelSupportDevelopment => 'Support Development';
   @override
@@ -441,7 +441,7 @@ class LanguageId extends Languages {
   @override
   String get labelEnjoyTheApp => 'Enjoy the\nApp';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube is back with a cleaner look and set of features, have fun with your music!';
+  String get labelSongtubeIsBackDescription => 'MDD Player is back with a cleaner look and set of features, have fun with your music!';
   @override
   String get labelLetsGo => 'Let\'s go';
   @override
@@ -545,7 +545,7 @@ class LanguageId extends Languages {
   @override
   String get labelPermissionRequired => 'Permission Required';
   @override
-  String get labelPermissionRequiredDescription => 'All file access permission is required for SongTube to edit any song on your device';
+  String get labelPermissionRequiredDescription => 'All file access permission is required for MDD Player to edit any song on your device';
   @override
   String get labelApplying => 'Applying';
   @override

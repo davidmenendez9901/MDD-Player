@@ -205,7 +205,7 @@ class LanguageBg extends Languages {
   @override
   String get labelDeleteCache => "Изчистване на кеша";
   @override
-  String get labelDeleteCacheJustification => "Изчистете кеша на SongTube";
+  String get labelDeleteCacheJustification => "Изчистете кеша на MDD Player";
   @override
   String get labelAndroid11Fix => "Поправете Android 11";
   @override
@@ -299,7 +299,7 @@ class LanguageBg extends Languages {
   String get labelJoinTelegramChannel => "Присъединете се към канала в Telegram!";
   @override
   String get labelJoinTelegramJustification =>
-    "Харесвате ли SongTube? Моля, присъединете се към Telegram канала! Там ще намерите " +
+    "Харесвате ли MDD Player? Моля, присъединете се към Telegram канала! Там ще намерите " +
     "актуализации, информация, разработка, линк към групата и други социални линкове." +
     "\n\n" +
     "В случай че имате проблем или страхотно предложение, " +
@@ -406,9 +406,9 @@ class LanguageBg extends Languages {
   @override
   String get labelBackupAndRestoreDescription => 'Запазете или възстановете всички ваши локални данни';
   @override
-  String get labelSongtubeLink => 'SongTube Връзка';
+  String get labelSongtubeLink => 'MDD Player Връзка';
   @override
-  String get labelSongtubeLinkDescription => 'Разрешете на разширението на браузъра SongTube да открие това устройство, натиснете продължително, за да научите повече';
+  String get labelSongtubeLinkDescription => 'Разрешете на разширението на браузъра MDD Player да открие това устройство, натиснете продължително, за да научите повече';
   @override
   String get labelSupportDevelopment => 'Подкрепете разработката';
   @override
@@ -442,7 +442,7 @@ class LanguageBg extends Languages {
   @override
   String get labelEnjoyTheApp => 'Насладете се на\nПриложението';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube се завръща с по-чист вид и набор от функции, наслаждавайте се на вашата музика!';
+  String get labelSongtubeIsBackDescription => 'MDD Player се завръща с по-чист вид и набор от функции, наслаждавайте се на вашата музика!';
   @override
   String get labelLetsGo => 'Хайде';
   @override
@@ -546,7 +546,7 @@ class LanguageBg extends Languages {
   @override
   String get labelPermissionRequired => 'Изисква се разрешение';
   @override
-  String get labelPermissionRequiredDescription => 'Изисква се разрешение за достъп до всички файлове, за да може SongTube да редактира всяка песен на вашето устройство';
+  String get labelPermissionRequiredDescription => 'Изисква се разрешение за достъп до всички файлове, за да може MDD Player да редактира всяка песен на вашето устройство';
   @override
   String get labelApplying => 'Прилага се';
   @override

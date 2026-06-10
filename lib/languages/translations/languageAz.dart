@@ -207,7 +207,7 @@ class LanguageAz extends Languages {
   @override
   String get labelDeleteCache => "Keşləri sil";
   @override
-  String get labelDeleteCacheJustification => "SongTube keşlərini silin";
+  String get labelDeleteCacheJustification => "MDD Player keşlərini silin";
   @override
   String get labelAndroid11Fix => "Android 11 düzəltməsi";
   @override
@@ -298,7 +298,7 @@ class LanguageAz extends Languages {
   String get labelJoinTelegramChannel => "Telegram kanalına qoşul!";
   @override
   String get labelJoinTelegramJustification =>
-      "SongTube-u sevdinizmi? Telegram Kanalımıza qoşula bilərsiniz! " +
+      "MDD Player-u sevdinizmi? Telegram Kanalımıza qoşula bilərsiniz! " +
       "Yeniliklər, məlumatlar, inkişaf və ya digər sosial media əlaqələrini tapa bilərsiniz." +
       "\n\n" +
       "Sualınız və ya mükəmməl bir tövsiyəniz varsa, qrupumuza qoşularaq və yazaraq bildirə bilərsiniz! " +
@@ -415,7 +415,7 @@ class LanguageAz extends Languages {
   String get labelSongtubeLink => 'SongTube Link';
   @override
   String get labelSongtubeLinkDescription =>
-      'SongTube brauzer əlavəsini bu cihazı aşkar etməyə icazə verin, daha çox məlumat almaq üçün uzun basın';
+      'MDD Player brauzer əlavəsini bu cihazı aşkar etməyə icazə verin, daha çox məlumat almaq üçün uzun basın';
   @override
   String get labelSupportDevelopment => 'İnkişafı Dəstəklə';
   @override
@@ -451,7 +451,7 @@ class LanguageAz extends Languages {
   String get labelEnjoyTheApp => 'Tətbiqə zövq alın';
   @override
   String get labelSongtubeIsBackDescription =>
-      'SongTube daha təmiz bir görünüş və xüsusiyyət dəsti ilə qayıdır, musiqinizlə eğlənəsiniz!';
+      'MDD Player daha təmiz bir görünüş və xüsusiyyət dəsti ilə qayıdır, musiqinizlə eğlənəsiniz!';
   @override
   String get labelLetsGo => 'Getmək';
   @override
@@ -574,7 +574,7 @@ class LanguageAz extends Languages {
   String get labelPermissionRequired => 'İcazə tələb olunur';
   @override
   String get labelPermissionRequiredDescription =>
-      'SongTube-un cihazınızdakı hər hansı bir mahnını düzəltməsi üçün bütün fayl giriş icazəsinə ehtiyacı var';
+      'MDD Player-un cihazınızdakı hər hansı bir mahnını düzəltməsi üçün bütün fayl giriş icazəsinə ehtiyacı var';
   @override
   String get labelApplying => 'Tətbiq edilir';
   @override

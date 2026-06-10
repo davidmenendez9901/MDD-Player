@@ -205,7 +205,7 @@ class LanguagePl extends Languages {
   @override
   String get labelDeleteCache => "Usuń cache";
   @override
-  String get labelDeleteCacheJustification => "Wyczyść cache SongTube";
+  String get labelDeleteCacheJustification => "Wyczyść cache MDD Player";
   @override
   String get labelAndroid11Fix => "Naprawa dla Android 11";
   @override
@@ -295,7 +295,7 @@ class LanguagePl extends Languages {
   String get labelJoinTelegramChannel => "Dołącz do kanały Telegram";
   @override
   String get labelJoinTelegramJustification =>
-      "Podoba Ci się SongTube? Dołącz do kanału Telegram! Znajdziesz tam " +
+      "Podoba Ci się MDD Player? Dołącz do kanału Telegram! Znajdziesz tam " +
       "Aktualizacje, informacje, rozwój, linki do grup i inne linki społecznościowe." +
       "\n\n" +
       "Jeśli masz jakiś problem lub rekomendację, " +
@@ -413,7 +413,7 @@ class LanguagePl extends Languages {
   String get labelSongtubeLink => 'SongTube Link';
   @override
   String get labelSongtubeLinkDescription =>
-      'Pozwól rozszerzeniu do przeglądarki SongTube na wykrywanie tego urządzenia, naciśnij i przytrzymaj aby dowiedzieć się więcej';
+      'Pozwól rozszerzeniu do przeglądarki MDD Player na wykrywanie tego urządzenia, naciśnij i przytrzymaj aby dowiedzieć się więcej';
   @override
   String get labelSupportDevelopment => 'Wesprzyj rozwój';
   @override
@@ -449,7 +449,7 @@ class LanguagePl extends Languages {
   String get labelEnjoyTheApp => 'Miłego używania\nAplikacji';
   @override
   String get labelSongtubeIsBackDescription =>
-      'SongTube powraca z czystszym wyglądem i nowym zestawem funkcji, ciesz się swoją muzyką!';
+      'MDD Player powraca z czystszym wyglądem i nowym zestawem funkcji, ciesz się swoją muzyką!';
   @override
   String get labelLetsGo => 'Zaczynajmy';
   @override
@@ -571,7 +571,7 @@ class LanguagePl extends Languages {
   String get labelPermissionRequired => 'Wymagana zgoda';
   @override
   String get labelPermissionRequiredDescription =>
-      'Pełny dostęp do plików jest wymagany dla SongTube żeby edytować każdą piosenkę na twoim urządzeniu';
+      'Pełny dostęp do plików jest wymagany dla MDD Player żeby edytować każdą piosenkę na twoim urządzeniu';
   @override
   String get labelApplying => 'Zastosowywanie';
   @override

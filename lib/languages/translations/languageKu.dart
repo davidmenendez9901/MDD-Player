@@ -298,7 +298,7 @@ class LanguageKu extends Languages {
   String get labelJoinTelegramChannel => "Beşdarî kenala me ya Telegram bibe!";
   @override
   String get labelJoinTelegramJustification =>
-    "Tu ji SongTube hez dikî? Jkx beşdarî kanala me ya Telegram bibe! Tu yê " +
+    "Tu ji MDD Player hez dikî? Jkx beşdarî kanala me ya Telegram bibe! Tu yê " +
     "Rojanekirin, Zanyarî, Pêşdebirin, girêdanên komê û girêdanê torên civakî yên din bibînî." +
     "\n\n" +
     "Ku tu rastî pirsgirêkêkê hatî an jî pêşniyareke te heye, " +
@@ -405,9 +405,9 @@ class LanguageKu extends Languages {
   @override
   String get labelBackupAndRestoreDescription => 'Hemû daneyên xwe yên herêmî tomar bike an jî dîsa saz bike';
   @override
-  String get labelSongtubeLink => 'Girêdana SongTube';
+  String get labelSongtubeLink => 'Girêdana MDD Player';
   @override
-  String get labelSongtubeLinkDescription => 'Mafê bide pêvekên geroka SongTube da ku vê amûrê bibîne, dirêj bitikîne bo bêtir fêr bibî';
+  String get labelSongtubeLinkDescription => 'Mafê bide pêvekên geroka MDD Player da ku vê amûrê bibîne, dirêj bitikîne bo bêtir fêr bibî';
   @override
   String get labelSupportDevelopment => 'Piştgiriya pêşxistinê';
   @override
@@ -441,7 +441,7 @@ class LanguageKu extends Languages {
   @override
   String get labelEnjoyTheApp => 'Xweşiyê bibîne ji\nSepanê';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube bi dîmeneke paktir vegeriya ye û komek taybetmendî, bi muzîka xwe xweşiyê bibîne!';
+  String get labelSongtubeIsBackDescription => 'MDD Player bi dîmeneke paktir vegeriya ye û komek taybetmendî, bi muzîka xwe xweşiyê bibîne!';
   @override
   String get labelLetsGo => 'Dest pê\'s bike';
   @override
@@ -545,7 +545,7 @@ class LanguageKu extends Languages {
   @override
   String get labelPermissionRequired => 'Mafdayîn pêdivî ye';
   @override
-  String get labelPermissionRequiredDescription => 'Ji bo SongTube di amûra te de stranekê serrast bikî hemû mafdayînên gihîştina pelan pêdivî ye.';
+  String get labelPermissionRequiredDescription => 'Ji bo MDD Player di amûra te de stranekê serrast bikî hemû mafdayînên gihîştina pelan pêdivî ye.';
   @override
   String get labelApplying => 'Tê sepandin';
   @override

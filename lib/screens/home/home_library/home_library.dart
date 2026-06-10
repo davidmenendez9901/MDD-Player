@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:songtube/internal/cache_utils.dart';
@@ -231,29 +232,22 @@ class _HomeLibraryState extends State<HomeLibrary> {
             Semantics(
               label: 'Open telegram channel',
               child: GestureDetector(
-                onTap: () => launchUrl(Uri.parse("https://t.me/songtubechannel"), mode: LaunchMode.externalApplication),
+                onTap: () => launchUrl(Uri.parse(mddPlayerTelegramUrl), mode: LaunchMode.externalApplication),
                 child: Image.asset('assets/images/telegram.png')
               ),
             ),
             Semantics(
               label: 'Open github repository',
               child: GestureDetector(
-                onTap: () => launchUrl(Uri.parse("https://github.com/SongTube"), mode: LaunchMode.externalApplication),
+                onTap: () => launchUrl(Uri.parse(mddPlayerRepoUrl), mode: LaunchMode.externalApplication),
                 child: Image.asset('assets/images/github.png')
               ),
             ),
             Semantics(
-              label: 'Open facebook page',
+              label: 'Open whatsapp channel',
               child: GestureDetector(
-                onTap: () => launchUrl(Uri.parse("https://facebook.com/songtubeapp/"), mode: LaunchMode.externalApplication),
-                child: Image.asset('assets/images/facebook.png')
-              ),
-            ),
-            Semantics(
-              label: 'Open instagram page',
-              child: GestureDetector(
-                onTap: () => launchUrl(Uri.parse("https://instagram.com/songtubeapp"), mode: LaunchMode.externalApplication),
-                child: Image.asset('assets/images/instagram.png')
+                onTap: () => launchUrl(Uri.parse(mddPlayerWhatsappUrl), mode: LaunchMode.externalApplication),
+                child: const Icon(MdiIcons.whatsapp, size: 48, color: Color(0xFF25D366))
               ),
             ),
           ],

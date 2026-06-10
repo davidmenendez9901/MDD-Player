@@ -205,7 +205,7 @@ class LanguageIgbo extends Languages {
   @override
   String get labelDeleteCache => "Hichapụ Cache";
   @override
-  String get labelDeleteCacheJustification => "Hichapụ SongTube Cache";
+  String get labelDeleteCacheJustification => "Hichapụ MDD Player Cache";
   @override
   String get labelAndroid11Fix => "Gam akporo 11 Idozi";
   @override
@@ -298,7 +298,7 @@ class LanguageIgbo extends Languages {
   String get labelJoinTelegramChannel => "Jikọọ na Channel Telegram!";
   @override
   String get labelJoinTelegramJustification =>
-    "Tube na-amasị SongTube? Biko sonye na Telegram Channel! Will ga-achọta " +
+    "Tube na-amasị MDD Player? Biko sonye na Telegram Channel! Will ga-achọta " +
     "Mmelite, Ozi, Mmepe, Njikọ Njikọ na njikọta mmekọrịta ndị ọzọ." +
     "\n\n" +
     "Ọ bụrụ na ị nwere nsogbu ma ọ bụ nnukwu nkwụghachi ụgwọ n'uche gị, " +
@@ -405,9 +405,9 @@ class LanguageIgbo extends Languages {
   @override
   String get labelBackupAndRestoreDescription => 'Chekwaa ma ọ bụ weghachite data mpaghara gị niile';
   @override
-  String get labelSongtubeLink => 'Njikọ SongTube';
+  String get labelSongtubeLink => 'Njikọ MDD Player';
   @override
-  String get labelSongtubeLinkDescription => 'Kwe ka ndọtị ihe nchọgharị SongTube chọpụta ngwaọrụ a, pịa ogologo ka ịmụtakwu';
+  String get labelSongtubeLinkDescription => 'Kwe ka ndọtị ihe nchọgharị MDD Player chọpụta ngwaọrụ a, pịa ogologo ka ịmụtakwu';
   @override
   String get labelSupportDevelopment => 'Nkwado Mmepe';
   @override
@@ -441,7 +441,7 @@ class LanguageIgbo extends Languages {
   @override
   String get labelEnjoyTheApp => 'Nwee anụrị\n Ngwa';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube alọtala ọdịdị dị ọcha na njiri mara ya, were egwu gị kporie ndụ';
+  String get labelSongtubeIsBackDescription => 'MDD Player alọtala ọdịdị dị ọcha na njiri mara ya, were egwu gị kporie ndụ';
   @override
   String get labelLetsGo => 'Ka anyị gaa';
   @override
@@ -545,7 +545,7 @@ class LanguageIgbo extends Languages {
   @override
   String get labelPermissionRequired => 'Ikike achọrọ';
   @override
-  String get labelPermissionRequiredDescription => 'A chọrọ ikike ịnweta faịlụ niile maka SongTube iji dezie egwu ọ bụla na ngwaọrụ gị';
+  String get labelPermissionRequiredDescription => 'A chọrọ ikike ịnweta faịlụ niile maka MDD Player iji dezie egwu ọ bụla na ngwaọrụ gị';
   @override
   String get labelApplying => 'itinye';
   @override

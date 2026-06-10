@@ -193,7 +193,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         SettingTileCheckbox(
           value: AppSettings.enableInAppUpdates,
           title: 'In-App Updates',
-          subtitle: 'Allow songtube to check for updates in the background',
+          subtitle: 'Allow MDD Player to check for updates in the background',
           leadingIcon: LineIcons.checkCircle,
           onChange: (value) {
             setState(() {

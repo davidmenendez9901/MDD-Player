@@ -57,7 +57,7 @@ class BackupModel {
       downloads: downloadProvider.downloadedSongs,
       musicPlaylists: playlistProvider.globalPlaylists,
     ).toJson();
-    String fileName = 'songtube_backup-${DateTime.now().toString()}.json';
+    String fileName = 'mddplayer_backup-${DateTime.now().toString()}.json';
     final result = await PickOrSave().fileSaver(params: FileSaverParams(
       saveFiles: [
         SaveFileInfo(

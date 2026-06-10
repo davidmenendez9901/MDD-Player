@@ -47,7 +47,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "SongTube",
+                    "MDD Player",
                     style: bigTextStyle(context).copyWith(fontSize: 26)
                   ),
                   Row(

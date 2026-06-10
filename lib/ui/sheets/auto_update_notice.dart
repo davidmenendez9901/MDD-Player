@@ -30,10 +30,10 @@ class _AutoUpdateNoticeSheetState extends State<AutoUpdateNoticeSheet> {
                   style: subtitleTextStyle(context, opacity: 0.6),
                   children: [
                     const TextSpan(
-                      text: 'SongTube performs an update check every time the app is opened, and its made from it\'s GitHub repo '
+                      text: 'MDD Player performs an update check every time the app is opened, and its made from it\'s GitHub repo '
                     ),
                     TextSpan(
-                      text: 'https://github.com/SongTube/SongTube-App',
+                      text: 'https://github.com/davidmenendez9901/MDD-Player',
                       style: subtitleTextStyle(context).copyWith(
                         color: Theme.of(context).primaryColor.withOpacity(0.8)
                       ),
@@ -57,7 +57,7 @@ class _AutoUpdateNoticeSheetState extends State<AutoUpdateNoticeSheet> {
                 child: SettingTileCheckbox(
                   value: AppSettings.enableInAppUpdates,
                   title: 'In-App Updates',
-                  subtitle: 'Allow songtube to check for updates in the background',
+                  subtitle: 'Allow MDD Player to check for updates in the background',
                   leadingIcon: LineIcons.checkCircle,
                   onChange: (value) {
                     setState(() {

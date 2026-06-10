@@ -1,5 +1,20 @@
 ![](https://imgur.com/vcsnxWV.jpg)
 
+# MDD Player
+
+> **This is a modified version (fork) of [SongTube](https://github.com/SongTube/SongTube-App), originally created by [Artx](https://linktr.ee/artxdev) (Airis Team). This fork is NOT the official SongTube app and is not affiliated with or endorsed by the original authors.**
+>
+> **Modified by David Menendez, 2026.** Main changes in this fork:
+>
+> + Offline mode (browse and play without a connection)
+> + Playback of local downloads from the music player
+> + Audio-only data saving mode
+> + App renamed to **MDD Player** with a new application ID (`dev.davidmenendez.mddplayer`) so it can be installed alongside the original app
+>
+> Like the original, this fork is licensed under the [GNU GPL v3](LICENSE). The full source code of this modified version is available in this repository, and APK releases are published in the [Releases](https://github.com/davidmenendez9901/MDD-Player/releases) section.
+
+---
+
 SongTube is a new beautiful and fast application made in Flutter, it supports an almost full original experience, with many features music oriented features, including a full music player.
 
 
@@ -27,14 +42,16 @@ SongTube is a new beautiful and fast application made in Flutter, it supports an
 + Backup & restore local data
 
 
-## Download SongTube
+## Download MDD Player
 
-You can get this application from the official SongTube Channel on Telegram: https://t.me/songtubechannel (You can also join SongTube official group from the channel, any kind of issue report or recommendation is welcomed!)
+You can get the APK from this repository's [Releases](https://github.com/davidmenendez9901/MDD-Player/releases) section.
 
-Other SongTube download sites:
+Community channels:
 
-+ Drive: https://tinyurl.com/SongTubeDrive
-+ GitHub: https://tinyurl.com/STGithub
++ Telegram: https://t.me/mdd_player
++ WhatsApp: https://whatsapp.com/channel/0029Vap9Qt24NVios8i5fi2M
+
+If you are looking for the original SongTube app, visit the [official SongTube repository](https://github.com/SongTube/SongTube-App).
 
 
 ## SongTube Link

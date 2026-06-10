@@ -205,7 +205,7 @@ class LanguageUa extends Languages {
   @override
   String get labelDeleteCache => "Видалити кеш";
   @override
-  String get labelDeleteCacheJustification => "Очистити кеш SongTube";
+  String get labelDeleteCacheJustification => "Очистити кеш MDD Player";
   @override
   String get labelAndroid11Fix => "Android 11 Виправлення";
   @override
@@ -298,7 +298,7 @@ class LanguageUa extends Languages {
   String get labelJoinTelegramChannel => "Приєднуйтесь до Телеграм каналу!";
   @override
   String get labelJoinTelegramJustification =>
-    "Вам подобається SongTube? Будь ласка, приєднуйтесь до Телеграм каналу! Ви знайдете " +
+    "Вам подобається MDD Player? Будь ласка, приєднуйтесь до Телеграм каналу! Ви знайдете " +
     "Оновлення, Інформацію, Розробку, посилання на групу та інші соціальні посилання." +
     "\n\n" +
     "У випадку, якщо у вас є проблема або чудова рекомендація, " +
@@ -405,9 +405,9 @@ class LanguageUa extends Languages {
   @override
   String get labelBackupAndRestoreDescription => 'Зберегти чи відновити всі ваші локальні дані';
   @override
-  String get labelSongtubeLink => 'SongTube Посилання';
+  String get labelSongtubeLink => 'MDD Player Посилання';
   @override
-  String get labelSongtubeLinkDescription => 'Дозволити розширенню SongTube браузера виявляти цей пристрій, утримуйте, щоб дізнатися більше';
+  String get labelSongtubeLinkDescription => 'Дозволити розширенню MDD Player браузера виявляти цей пристрій, утримуйте, щоб дізнатися більше';
   @override
   String get labelSupportDevelopment => 'Підтримати розробку';
   @override
@@ -441,7 +441,7 @@ class LanguageUa extends Languages {
   @override
   String get labelEnjoyTheApp => 'Насолоджуйтесь\nдодатком';
   @override
-  String get labelSongtubeIsBackDescription => 'SongTube повернувся з чистішим виглядом і набором функцій, розважайтесь зі своєю музикою!';
+  String get labelSongtubeIsBackDescription => 'MDD Player повернувся з чистішим виглядом і набором функцій, розважайтесь зі своєю музикою!';
   @override
   String get labelLetsGo => 'Вперед';
   @override
@@ -545,7 +545,7 @@ class LanguageUa extends Languages {
   @override
   String get labelPermissionRequired => 'Необхідний дозвіл';
   @override
-  String get labelPermissionRequiredDescription => 'Для редагування будь-якої пісні на вашому пристрої SongTube потрібен дозвіл Доступ до всіх файлів';
+  String get labelPermissionRequiredDescription => 'Для редагування будь-якої пісні на вашому пристрої MDD Player потрібен дозвіл Доступ до всіх файлів';
   @override
   String get labelApplying => 'Застосування';
   @override

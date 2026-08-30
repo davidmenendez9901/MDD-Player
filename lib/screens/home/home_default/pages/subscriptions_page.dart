@@ -47,13 +47,11 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
   }
 
   Widget _body() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Channels
-          SizedBox(
+    return CustomScrollView(
+      slivers: [
+        // Channels
+        SliverToBoxAdapter(
+          child: SizedBox(
             height: 80,
             child: ListView.builder(
               clipBehavior: Clip.none,
@@ -97,25 +95,27 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
               },
             ),
           ),
-          // Videos
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 16).copyWith(bottom: audioHandler.mediaItem.value != null ? (kToolbarHeight*1.6)+24 : 24),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: contentProvider.channelsFeedList.length,
-            itemBuilder: (context, index) {
-              final item = contentProvider.channelsFeedList[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: InfoItemRenderer(
-                  infoItem: item,
-                  expandItem: true,
-                ),
-              );
-            } 
+        ),
+        // Videos (lazily built)
+        SliverPadding(
+          padding: const EdgeInsets.only(top: 16).copyWith(bottom: audioHandler.mediaItem.value != null ? (kToolbarHeight*1.6)+24 : 24),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final item = contentProvider.channelsFeedList[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: InfoItemRenderer(
+                    infoItem: item,
+                    expandItem: true,
+                  ),
+                );
+              },
+              childCount: contentProvider.channelsFeedList.length,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

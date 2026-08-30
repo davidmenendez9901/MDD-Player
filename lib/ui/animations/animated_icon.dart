@@ -25,16 +25,19 @@ class AppAnimatedIcon extends StatelessWidget {
           color: color, size: size)
       );
     } else {
-      return Consumer<MediaProvider>(
-        builder: (context, provider, _) {
+      // Only rebuild when the accent (vibrant) color changes, not on every
+      // MediaProvider notification
+      return Selector<MediaProvider, Color?>(
+        selector: (_, provider) => provider.currentColors.vibrant,
+        builder: (context, vibrant, _) {
           return AnimatedSwitcher(
             duration: kAnimationShortDuration,
             transitionBuilder: (child, animation) {
               return FadeTransition(opacity: animation, child: child);
             },
             child: Icon(icon,
-              key: ValueKey('animatedIcon${provider.currentColors.vibrant}'),
-              color: (provider.currentColors.vibrant ?? Theme.of(context).iconTheme.color)?.withOpacity(opacity ?? 1), size: size)
+              key: ValueKey('animatedIcon$vibrant'),
+              color: (vibrant ?? Theme.of(context).iconTheme.color)?.withOpacity(opacity ?? 1), size: size)
           );
         }
       );

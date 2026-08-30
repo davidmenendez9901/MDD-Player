@@ -22,8 +22,11 @@ class AnimatedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (auto) {
-      return Consumer<MediaProvider>(
-        builder: (context, provider, _) {
+      // Only rebuild when the accent (vibrant) color changes, not on every
+      // MediaProvider notification (song list, background image, etc.)
+      return Selector<MediaProvider, Color?>(
+        selector: (_, provider) => provider.currentColors.vibrant,
+        builder: (context, vibrant, _) {
           return AnimatedSwitcher(
             duration: kAnimationShortDuration,
             transitionBuilder: (child, animation) {
@@ -32,8 +35,8 @@ class AnimatedText extends StatelessWidget {
             child: Text(
               text,
               textAlign: textAlign,
-              key: ValueKey('$text-${provider.currentColors.vibrant ?? style.color?.value}'),
-              style: style.copyWith(letterSpacing: letterSpacing, color: (provider.currentColors.vibrant ?? style.color)?.withOpacity(opacity ?? 1)),
+              key: ValueKey('$text-${vibrant ?? style.color?.value}'),
+              style: style.copyWith(letterSpacing: letterSpacing, color: (vibrant ?? style.color)?.withOpacity(opacity ?? 1)),
             ),
           );
         }

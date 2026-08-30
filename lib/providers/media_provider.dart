@@ -48,14 +48,14 @@ class MediaProvider extends ChangeNotifier {
 
   // Refresh metadata of given song
   Future<void> refreshSong(String id) async {
-    final index = songs.indexWhere((element) => element.id == id);
+    final index = _songs.indexWhere((element) => element.id == id);
     if (index == -1) {
       return;
     }
     final metadata = await AudioTagger.extractAllTags(id);
     if (metadata != null) {
       final stats = await FileStat.stat(id);
-      final SongItem oldSong = songs[index];
+      final SongItem oldSong = _songs[index];
       final SongItem newSong = SongItem(
         album: metadata.album,
         artist: metadata.artist,
@@ -70,6 +70,7 @@ class MediaProvider extends ChangeNotifier {
       );
       _songs.removeAt(index);
       _songs.insert(index, newSong);
+      _invalidateSongsCache();
       // Save to cache
       CacheUtils.cacheSongs = _songs;
       notifyListeners();
@@ -100,23 +101,38 @@ class MediaProvider extends ChangeNotifier {
 
   // User Songs
   List<SongItem> _songs = [];
+  // Cached, deduplicated/sorted/filtered view of [_songs]. Recomputed lazily on
+  // first access and invalidated whenever [_songs] changes, so reads from the UI
+  // (which happen on every rebuild) no longer pay an O(n log n) cost per frame.
+  List<SongItem>? _sortedSongsCache;
   List<SongItem> get songs {
-    final list = _songs.unique((element) => element.id)..sort(((a, b) => a.title.compareTo(b.title)));
+    if (_sortedSongsCache != null) {
+      return _sortedSongsCache!;
+    }
+    final list = _songs.unique((element) => element.id, false)..sort(((a, b) => a.title.compareTo(b.title)));
     list.removeWhere((element) => element.id.contains('Android/media') || element.id.contains('Android/data') || element.id.contains('.mp4') || element.id.contains('.webm')
       // Call recordings, voicemails and voice notes are not music and their
       // malformed m4a containers can crash the audio decoder
       || element.id.contains('/Recordings/') || element.id.contains('/Notifications/'));
+    _sortedSongsCache = list;
     return list;
   }
   set songs(List<SongItem> items) {
     _songs = items;
+    _invalidateSongsCache();
     notifyListeners();
+  }
+
+  void _invalidateSongsCache() {
+    _sortedSongsCache = null;
   }
 
   // Save song to our current list and cache
   void insertSong(SongItem song) {
-    songs = songs..add(song)..unique((element) => element.id);
+    _songs = [..._songs, song]..unique((element) => element.id);
+    _invalidateSongsCache();
     CacheUtils.cacheSongs = songs;
+    notifyListeners();
   }
 
   Future<void> playSong(List<MediaItem> queue, int index) async {

@@ -33,28 +33,34 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> with TickerPr
   Widget _tabs() {
     return SizedBox(
       height: kToolbarHeight,
-      child: TabBar(
-        padding: const EdgeInsets.only(left: 8),
-        controller: tabController,
-        isScrollable: true,
-        labelColor: Provider.of<MediaProvider>(context).currentColors.vibrant,
-        unselectedLabelColor: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.6),
-        labelStyle: tabBarTextStyle(context, opacity: 1),
-        unselectedLabelStyle: tabBarTextStyle(context, bold: false),
-        indicatorSize: TabBarIndicatorSize.label,
-        indicatorColor: Colors.transparent,
-        tabs: [
-          // General Settings
-          Tab(child: Text(Languages.of(context)!.labelGeneral)),
-          // Customization Settings
-          Tab(child: Text(Languages.of(context)!.labelPages)),
-          // Download Settings
-          Tab(child: Text(Languages.of(context)!.labelDownloads)),
-          // Video Player Settings
-          Tab(child: Text(Languages.of(context)!.labelVideos)),
-          // Music Player Settings
-          Tab(child: Text(Languages.of(context)!.labelMusicPlayer)),
-        ],
+      // Scope accent-color rebuilds to the TabBar instead of the whole screen
+      child: Selector<MediaProvider, Color?>(
+        selector: (_, provider) => provider.currentColors.vibrant,
+        builder: (context, vibrant, _) {
+          return TabBar(
+            padding: const EdgeInsets.only(left: 8),
+            controller: tabController,
+            isScrollable: true,
+            labelColor: vibrant,
+            unselectedLabelColor: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.6),
+            labelStyle: tabBarTextStyle(context, opacity: 1),
+            unselectedLabelStyle: tabBarTextStyle(context, bold: false),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: Colors.transparent,
+            tabs: [
+              // General Settings
+              Tab(child: Text(Languages.of(context)!.labelGeneral)),
+              // Customization Settings
+              Tab(child: Text(Languages.of(context)!.labelPages)),
+              // Download Settings
+              Tab(child: Text(Languages.of(context)!.labelDownloads)),
+              // Video Player Settings
+              Tab(child: Text(Languages.of(context)!.labelVideos)),
+              // Music Player Settings
+              Tab(child: Text(Languages.of(context)!.labelMusicPlayer)),
+            ],
+          );
+        },
       ),
     );
   }

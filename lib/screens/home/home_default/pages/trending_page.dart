@@ -14,8 +14,23 @@ import 'package:songtube/ui/tiles/channel_tile.dart';
 import 'package:songtube/ui/tiles/shimmer_tile.dart';
 import 'package:songtube/ui/ui_utils.dart';
 
-class TrendingPage extends StatelessWidget {
+class TrendingPage extends StatefulWidget {
   const TrendingPage({super.key});
+
+  @override
+  State<TrendingPage> createState() => _TrendingPageState();
+}
+
+class _TrendingPageState extends State<TrendingPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    // Load trending only when this tab is actually shown
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ContentProvider>(context, listen: false).ensureTrendingLoaded();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

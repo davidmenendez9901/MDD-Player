@@ -75,6 +75,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool showForward = false;
 
   Timer? overlayDismissTimer;
+  Timer? autoplayTimer;
 
   YoutubeVideo? _youtubeVideo;
   YoutubeVideo? get youtubeVideo => _youtubeVideo;
@@ -112,7 +113,6 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     controller?.seekTo(position);
   }
 
-  // ignore: close_sinks
   final BehaviorSubject<double> _dragPositionSubject =
     BehaviorSubject.seeded(0);
 
@@ -389,7 +389,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   // Autoplay Logic
   void runAutoplay() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    autoplayTimer?.cancel();
+    autoplayTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (showAutoplay == false) {
         timer.cancel();
         autoplayCurrent = autoplayDelay;
@@ -420,6 +421,9 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void dispose() {
+    overlayDismissTimer?.cancel();
+    autoplayTimer?.cancel();
+    _dragPositionSubject.close();
     controller?.dispose();
     Wakelock.disable();
     super.dispose();
@@ -842,8 +846,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         borderRadius: BorderRadius.circular(15),
                         child: AspectRatio(
                           aspectRatio: 16/9,
-                          child: Image.network(
-                            nextStream is StreamInfoItem
+                          child: STNetworkImage(
+                            url: nextStream is StreamInfoItem
                               ? nextStream.thumbnails!.hqdefault
                               : (nextStream as PlaylistInfoItem).thumbnails!.last,
                             fit: BoxFit.cover,

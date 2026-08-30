@@ -26,6 +26,16 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
   // Content Provider
   ContentProvider get contentProvider => Provider.of(context);
 
+  @override
+  void initState() {
+    super.initState();
+    // Load the subscriptions feed (up to 10 channel upload lists) only when
+    // this tab is actually shown, not eagerly at app startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ContentProvider>(context, listen: false).ensureChannelsFeedLoaded();
+    });
+  }
+
   // Has Subscriptions
   bool get hasSubscriptions => contentProvider.channelSubscriptions.isNotEmpty;
 
@@ -47,13 +57,11 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
   }
 
   Widget _body() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Channels
-          SizedBox(
+    return CustomScrollView(
+      slivers: [
+        // Channels
+        SliverToBoxAdapter(
+          child: SizedBox(
             height: 80,
             child: ListView.builder(
               clipBehavior: Clip.none,
@@ -97,25 +105,27 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
               },
             ),
           ),
-          // Videos
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 16).copyWith(bottom: audioHandler.mediaItem.value != null ? (kToolbarHeight*1.6)+24 : 24),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: contentProvider.channelsFeedList.length,
-            itemBuilder: (context, index) {
-              final item = contentProvider.channelsFeedList[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: InfoItemRenderer(
-                  infoItem: item,
-                  expandItem: true,
-                ),
-              );
-            } 
+        ),
+        // Videos (lazily built)
+        SliverPadding(
+          padding: const EdgeInsets.only(top: 16).copyWith(bottom: audioHandler.mediaItem.value != null ? (kToolbarHeight*1.6)+24 : 24),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final item = contentProvider.channelsFeedList[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: InfoItemRenderer(
+                    infoItem: item,
+                    expandItem: true,
+                  ),
+                );
+              },
+              childCount: contentProvider.channelsFeedList.length,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

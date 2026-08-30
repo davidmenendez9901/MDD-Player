@@ -3,6 +3,7 @@ import 'package:image_fade/image_fade.dart';
 import 'package:songtube/internal/models/video_preview.dart';
 import 'package:songtube/languages/languages.dart';
 import 'package:songtube/ui/components/common_sheet_widget.dart';
+import 'package:songtube/ui/components/st_network_image.dart';
 import 'package:songtube/ui/sheets/common_sheet.dart';
 import 'package:songtube/ui/text_styles.dart';
 
@@ -62,7 +63,7 @@ class _VideoPreviewSheetState extends State<VideoPreviewSheet> {
                           fadeDuration: const Duration(milliseconds: 300),
                           placeholder:
                               const ShimmerContainer(height: null, width: null),
-                          image: NetworkImage(preview?.thumbnailUrl ?? ''),
+                          image: stImageProvider(preview?.thumbnailUrl ?? ''),
                           fit: BoxFit.fitWidth,
                           errorBuilder: (context, child, exception) {
                             return Container(color: Theme.of(context).scaffoldBackgroundColor);

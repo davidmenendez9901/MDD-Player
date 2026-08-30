@@ -200,28 +200,22 @@ class VideoPlayerCommentsExpanded extends StatelessWidget {
             child: ShowUpTransition(
               slideSide: SlideFromSlide.bottom,
               delay: const Duration(milliseconds: 100),
-              child: ListView(
-                
-                padding: const EdgeInsets.only(top: 12, left: 4, right: 8, bottom: 16),
-                children: [
-                  if (pinnedComment != null)
-                  Container(
-                    child: _commentTile(context, pinnedComment),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: kToolbarHeight),
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      final comment = comments[index];
-                      if (comment.pinned ?? false) {
-                        return const SizedBox();
-                      } 
-                      return _commentTile(context, comment);
-                    },
-                  ),
-                ],
+              // Single lazy list: the pinned comment (if any) is rendered as the
+              // first item instead of nesting a shrinkWrapped ListView, so long
+              // threads no longer materialize every tile at once.
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 12, left: 4, right: 8, bottom: kToolbarHeight),
+                itemCount: comments.length + (pinnedComment != null ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (pinnedComment != null && index == 0) {
+                    return _commentTile(context, pinnedComment);
+                  }
+                  final comment = comments[index - (pinnedComment != null ? 1 : 0)];
+                  if (comment.pinned ?? false) {
+                    return const SizedBox();
+                  }
+                  return _commentTile(context, comment);
+                },
               ),
             ),
           )

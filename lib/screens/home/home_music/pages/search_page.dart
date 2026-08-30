@@ -35,13 +35,12 @@ class MusicSearchPage extends StatelessWidget {
       child: songs.isEmpty && albums.isEmpty && artists.isEmpty ? _searchEmpty(context) : AnimatedSize(
         duration: const Duration(milliseconds: 200),
         curve: Curves.ease,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(top: 0),
-          child: Column(
-            children: [
-              // Artists
-              if (artists.isNotEmpty)
-              Padding(
+        child: CustomScrollView(
+          slivers: [
+            // Artists
+            if (artists.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12, top: 4),
@@ -52,35 +51,35 @@ class MusicSearchPage extends StatelessWidget {
                   ),
                 ),
               ),
-              if (artists.isNotEmpty)
-              SizedBox(
+            ),
+            if (artists.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(
                 height: 160,
-                child: Builder(
-                  builder: (context) {
-                    return ListView.builder(
-                      clipBehavior: Clip.none,
-                      padding: const EdgeInsets.only(left: 4),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: artists.length.clamp(0, 10),
-                      itemBuilder: (context, index) {
-                        final artist = artists[index];
-                        return Padding(
-                          padding: EdgeInsets.only(left: index == 0 ? 0 : 8),
-                          child: ArtistCardTile(
-                            artist: artist,
-                            onTap: (artist) {
-                              UiUtils.pushRouteAsync(context, PlaylistScreen(mediaSet: artist.toMediaSet()));
-                            },
-                          ),
-                        );
-                      },
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.only(left: 4),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: artists.length.clamp(0, 10),
+                  itemBuilder: (context, index) {
+                    final artist = artists[index];
+                    return Padding(
+                      padding: EdgeInsets.only(left: index == 0 ? 0 : 8),
+                      child: ArtistCardTile(
+                        artist: artist,
+                        onTap: (artist) {
+                          UiUtils.pushRouteAsync(context, PlaylistScreen(mediaSet: artist.toMediaSet()));
+                        },
+                      ),
                     );
-                  }
+                  },
                 ),
               ),
-              // Albums
-              if (albums.isNotEmpty)
-              Padding(
+            ),
+            // Albums
+            if (albums.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12, top: 4),
@@ -91,35 +90,34 @@ class MusicSearchPage extends StatelessWidget {
                   ),
                 ),
               ),
-              if (albums.isNotEmpty)
-              SizedBox(
+            ),
+            if (albums.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(
                 height: 160,
-                child: Builder(
-                  builder: (context) {
-                    return ListView.builder(
-                      clipBehavior: Clip.none,
-                      
-                      padding: const EdgeInsets.only(left: 4),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: albums.length.clamp(0, 10),
-                      itemBuilder: (context, index) {
-                        final album = albums[index];
-                        return Padding(
-                          padding: EdgeInsets.only(left: index == 0 ? 0 : 8),
-                          child: AlbumCardTile(
-                            album: album,
-                            onTap: (album) {
-                              UiUtils.pushRouteAsync(context, PlaylistScreen(mediaSet: album.toMediaSet()));
-                            },
-                          ),
-                        );
-                      },
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.only(left: 4),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: albums.length.clamp(0, 10),
+                  itemBuilder: (context, index) {
+                    final album = albums[index];
+                    return Padding(
+                      padding: EdgeInsets.only(left: index == 0 ? 0 : 8),
+                      child: AlbumCardTile(
+                        album: album,
+                        onTap: (album) {
+                          UiUtils.pushRouteAsync(context, PlaylistScreen(mediaSet: album.toMediaSet()));
+                        },
+                      ),
                     );
-                  }
+                  },
                 ),
               ),
-              if (songs.isNotEmpty)
-              Padding(
+            ),
+            if (songs.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4, top: 4),
@@ -130,13 +128,11 @@ class MusicSearchPage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Songs
-              ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: songs.length,
-                itemBuilder: (context, index) {
+            ),
+            // Songs (lazily built)
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
                   final song = songs[index];
                   return SongTile(
                     song: song,
@@ -150,10 +146,11 @@ class MusicSearchPage extends StatelessWidget {
                     }
                   );
                 },
+                childCount: songs.length,
               ),
-              const SizedBox(height: 16+(kToolbarHeight*1.5)),
-            ],
-          ),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 16+(kToolbarHeight*1.5))),
+          ],
         ),
       ),
     );

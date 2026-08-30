@@ -125,22 +125,31 @@ class _BackgroundCarouselState extends State<BackgroundCarousel> with TickerProv
               AnimatedBuilder(
                 animation: animationController,
                 builder: (context, child) {
+                  // Skip the full-screen GPU blur pass entirely when the
+                  // effective blur is zero (blur disabled / intensity 0 /
+                  // panel collapsed); the color overlay alone is identical.
+                  final double sigma = widget.blurIntensity * animationController.value;
                   return AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     color: widget.backdropColor.withOpacity(widget.backdropOpacity), //mediaProvider.showLyrics ? 0.8 : widget.backdropOpacity),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        tileMode: TileMode.mirror,
-                        sigmaX: widget.blurIntensity * animationController.value,
-                        sigmaY: widget.blurIntensity * animationController.value,
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                      )
-                    ),
+                    child: sigma <= 0
+                      ? const SizedBox(
+                          width: double.infinity,
+                          height: double.infinity,
+                        )
+                      : BackdropFilter(
+                          filter: ImageFilter.blur(
+                            tileMode: TileMode.mirror,
+                            sigmaX: sigma,
+                            sigmaY: sigma,
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                          )
+                        ),
                   );
                 },
               ),

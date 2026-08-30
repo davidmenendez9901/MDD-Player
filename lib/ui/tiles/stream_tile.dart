@@ -199,7 +199,9 @@ class StreamTileExpanded extends StatelessWidget {
           fadeDuration: const Duration(milliseconds: 300),
           placeholder: Container(
                 color: Theme.of(context).cardColor.withOpacity(0.6)),
-          image: stImageProvider(stream.thumbnails?.maxresdefault ?? ''),
+          // List tiles use hqdefault instead of maxresdefault: visually
+          // equivalent at this size but a fraction of the bytes per thumbnail
+          image: stImageProvider(stream.thumbnails?.hqdefault ?? ''),
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
               Image(image: stImageProvider(stream.thumbnails!.hqdefault), fit: BoxFit.cover),

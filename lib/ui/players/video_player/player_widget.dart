@@ -846,8 +846,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         borderRadius: BorderRadius.circular(15),
                         child: AspectRatio(
                           aspectRatio: 16/9,
-                          child: Image.network(
-                            nextStream is StreamInfoItem
+                          child: STNetworkImage(
+                            url: nextStream is StreamInfoItem
                               ? nextStream.thumbnails!.hqdefault
                               : (nextStream as PlaylistInfoItem).thumbnails!.last,
                             fit: BoxFit.cover,

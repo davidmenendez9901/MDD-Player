@@ -26,9 +26,26 @@ import 'package:songtube/ui/ui_utils.dart';
 
 class ContentProvider extends ChangeNotifier {
 
-  ContentProvider() {
-    // Fetch Trending page for the Home Screen
+  ContentProvider();
+
+  // Home content is fetched lazily the first time its tab is shown (see
+  // ensureTrendingLoaded / ensureChannelsFeedLoaded) instead of eagerly in the
+  // constructor, so opening the app in another section (music, downloads) or in
+  // music-only mode doesn't trigger a YouTube network burst at startup.
+  bool _trendingRequested = false;
+  void ensureTrendingLoaded() {
+    if (_trendingRequested) {
+      return;
+    }
+    _trendingRequested = true;
     refreshTrendingPage();
+  }
+  bool _channelsFeedRequested = false;
+  void ensureChannelsFeedLoaded() {
+    if (_channelsFeedRequested) {
+      return;
+    }
+    _channelsFeedRequested = true;
     loadChannelsFeed();
   }
 

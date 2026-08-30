@@ -26,6 +26,16 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
   // Content Provider
   ContentProvider get contentProvider => Provider.of(context);
 
+  @override
+  void initState() {
+    super.initState();
+    // Load the subscriptions feed (up to 10 channel upload lists) only when
+    // this tab is actually shown, not eagerly at app startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ContentProvider>(context, listen: false).ensureChannelsFeedLoaded();
+    });
+  }
+
   // Has Subscriptions
   bool get hasSubscriptions => contentProvider.channelSubscriptions.isNotEmpty;
 

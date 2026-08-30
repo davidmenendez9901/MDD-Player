@@ -297,7 +297,13 @@ class ContentProvider extends ChangeNotifier {
   }
 
   // Favorite Videos
+  // Kept in memory after the first decode; SharedPreferences JSON is only parsed
+  // once instead of on every getter access (this getter is read from UI builders).
+  List<StreamInfoItem>? _favoriteVideosCache;
   List<StreamInfoItem> get favoriteVideos {
+    if (_favoriteVideosCache != null) {
+      return _favoriteVideosCache!;
+    }
     var map = jsonDecode(sharedPreferences.getString('newFavoriteVideos') ?? "{}");
     List<StreamInfoItem> videos = [];
     if (map.isNotEmpty) {
@@ -307,9 +313,11 @@ class ContentProvider extends ChangeNotifier {
         });
       }
     }
+    _favoriteVideosCache = videos;
     return videos;
   }
   set favoriteVideos(List<StreamInfoItem> videos) {
+    _favoriteVideosCache = videos;
     var map = videos.map((e) {
       return e.toMap();
     }).toList();
@@ -337,22 +345,30 @@ class ContentProvider extends ChangeNotifier {
     playingContent = ContentWrapper(infoItem: playlist.toPlaylistInfoItem())..playlistDetails = playlist;
     notifyListeners();
   }
+  List<YoutubePlaylist>? _streamPlaylistsCache;
   set streamPlaylists(List<YoutubePlaylist> playlist) {
+    _streamPlaylistsCache = playlist;
     String json = playlist.isNotEmpty ? jsonEncode(playlist.map((e) => e.toMap()).toList()) : jsonEncode({});
     sharedPreferences.setString('videoplaylists', json);
     notifyListeners();
   }
   List<YoutubePlaylist> get streamPlaylists {
+    if (_streamPlaylistsCache != null) {
+      return _streamPlaylistsCache!;
+    }
     String? json = sharedPreferences.getString('videoplaylists');
+    final List<YoutubePlaylist> result;
     if (json != null) {
       final map = jsonDecode(json);
-      return List<YoutubePlaylist>.generate(map.length, (index) {
+      result = List<YoutubePlaylist>.generate(map.length, (index) {
         final playlist = YoutubePlaylist.fromMap(map[index]);
         return playlist..streamCount = playlist.streams!.length;
       });
     } else {
-      return [];
+      result = [];
     }
+    _streamPlaylistsCache = result;
+    return result;
   }
   void streamPlaylistCreate(String name, String author, List<StreamInfoItem> streams, {String? thumbnail}) {
     final playlist =  YoutubePlaylist(null, name, null, author, null, null, null, thumbnail != null ? [thumbnail] : streams.first.thumbnails?.toList(), streams.length)..streams = streams;
@@ -415,11 +431,18 @@ class ContentProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  List<ChannelSubscription>? _channelSubscriptionsCache;
   List<ChannelSubscription> get channelSubscriptions {
+    if (_channelSubscriptionsCache != null) {
+      return _channelSubscriptionsCache!;
+    }
     String json = sharedPreferences.getString('subscriptions') ?? "";
-    return ChannelSubscription.fromJsonList(json);
+    final result = ChannelSubscription.fromJsonList(json);
+    _channelSubscriptionsCache = result;
+    return result;
   }
   set channelSubscriptions(List<ChannelSubscription> subscriptions) {
+    _channelSubscriptionsCache = subscriptions;
     sharedPreferences.setString('subscriptions', ChannelSubscription.toJsonList(subscriptions));
     notifyListeners();
   }

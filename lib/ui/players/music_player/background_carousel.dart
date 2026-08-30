@@ -1,4 +1,5 @@
 // Dart
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -40,15 +41,23 @@ class _BackgroundCarouselState extends State<BackgroundCarousel> with TickerProv
 
   late AnimationController animationController = 
     AnimationController(vsync: this, duration: const Duration(milliseconds: 300), value: 1);
+  StreamSubscription? _mediaItemSubscription;
 
   @override
   void initState() {
-    audioHandler.mediaItem.listen((event) {
+    _mediaItemSubscription = audioHandler.mediaItem.listen((event) {
       if (mounted) {
         setState(() {});
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _mediaItemSubscription?.cancel();
+    animationController.dispose();
+    super.dispose();
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
@@ -30,6 +31,7 @@ class ExpandedPlayerBody extends StatefulWidget {
 class _ExpandedPlayerBodyState extends State<ExpandedPlayerBody> {
   final BehaviorSubject<double> _dragPositionSubject =
     BehaviorSubject.seeded(0);
+  StreamSubscription? _mediaItemSubscription;
 
   // MediaProvider
   MediaProvider get mediaProvider => Provider.of<MediaProvider>(context, listen: false);
@@ -81,12 +83,19 @@ class _ExpandedPlayerBodyState extends State<ExpandedPlayerBody> {
 
   @override
   void initState() {
-    audioHandler.mediaItem.listen((event) {
+    _mediaItemSubscription = audioHandler.mediaItem.listen((event) {
       if (mounted) {
         setState(() {});
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _mediaItemSubscription?.cancel();
+    _dragPositionSubject.close();
+    super.dispose();
   }
 
   @override

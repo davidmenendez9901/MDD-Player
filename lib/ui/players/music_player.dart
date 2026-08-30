@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -79,9 +80,11 @@ class _MusicPlayerState extends State<MusicPlayer> with TickerProviderStateMixin
     return artworkFile(song.id);
   }
 
+  StreamSubscription? _mediaItemSubscription;
+
   @override
   void initState() {
-    audioHandler.mediaItem.listen((event) {
+    _mediaItemSubscription = audioHandler.mediaItem.listen((event) {
       if (mounted) {
         setState(() {});
         if (Provider.of<UiProvider>(context, listen: false).fwController.isPanelOpen && event != null) {
@@ -98,6 +101,12 @@ class _MusicPlayerState extends State<MusicPlayer> with TickerProviderStateMixin
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _mediaItemSubscription?.cancel();
+    super.dispose();
   }
 
   @override

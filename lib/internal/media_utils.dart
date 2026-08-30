@@ -148,7 +148,12 @@ class MediaUtils {
     for (var element in songList) {
       try {
         Duration duration = Duration(milliseconds: element.duration!);
-        FileStat stats = FileStat.statSync(element.data);
+        // MediaStore already provides date_modified (seconds since epoch);
+        // use it instead of a blocking FileStat.statSync per song, falling
+        // back to stat only when MediaStore didn't report a value.
+        final DateTime lastModified = element.dateModified != null
+          ? DateTime.fromMillisecondsSinceEpoch(element.dateModified! * 1000)
+          : FileStat.statSync(element.data).changed;
         list.add(
           SongItem(
             id: element.data,
@@ -157,7 +162,7 @@ class MediaUtils {
             album: element.album,
             artist: element.artist,
             duration: duration,
-            lastModified: stats.changed,
+            lastModified: lastModified,
             artworkPath: artworkFile(element.data),
             thumbnailPath: thumbnailFile(element.data),
           )
